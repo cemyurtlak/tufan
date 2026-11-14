@@ -1,3 +1,4 @@
+import { T as __T, dec } from './i18n.js';
 // Fırlatma sinematiği: seçilen roket sınıfına göre model, alev, duman, kademe ayrılması.
 import * as THREE from 'three';
 import { Particles } from './particles.js';
@@ -213,11 +214,11 @@ export class LaunchSequence {
     // Geri sayım yazıları
     const imp = this.opts.payload === 'impactor';
     if (t < ign) caption(`T−${3 - Math.floor(t)}`, `${this.launcher.name} · ${this.launcher.ref}`);
-    else if (t < lift + 1.2) caption(t < lift ? 'ATEŞLEME' : 'KALKIŞ!', `${this.launcher.name} · ${this.launcher.ref}`);
-    else if (tau > 4.5 && tau < 7) caption('MAKS-Q', 'En yüksek aerodinamik basınç: motorlar kısılıyor');
-    else if (tau > 8.5 && tau < 10.2) caption('KADEME AYRILMASI', '1. kademe görevini tamamladı');
-    else if (tau > 10.2 && tau < 12.5) caption('BURUN KONİSİ AYRILDI', imp ? 'Kinetik çarpıcı uzay boşluğunda' : 'Görev aracı uzay boşluğunda');
-    else if (tau >= 12.5) caption(imp ? 'ÇARPICI YOLDA' : 'DÜNYA KAÇIŞ YÖRÜNGESİ', imp ? 'GEZGİN\'in hedefleme verisiyle asteroide doğru' : `Asteroide transfer: ${String(this.launcher.transfer).replace('.', ',')} yıl`);
+    else if (t < lift + 1.2) caption(t < lift ? __T('ATEŞLEME') : __T('KALKIŞ!'), `${this.launcher.name} · ${this.launcher.ref}`);
+    else if (tau > 4.5 && tau < 7) caption(__T('MAKS-Q'), __T('En yüksek aerodinamik basınç: motorlar kısılıyor'));
+    else if (tau > 8.5 && tau < 10.2) caption(__T('KADEME AYRILMASI'), __T('1. kademe görevini tamamladı'));
+    else if (tau > 10.2 && tau < 12.5) caption(__T('BURUN KONİSİ AYRILDI'), imp ? __T('Kinetik çarpıcı uzay boşluğunda') : __T('Görev aracı uzay boşluğunda'));
+    else if (tau >= 12.5) caption(imp ? __T('ÇARPICI YOLDA') : __T('DÜNYA KAÇIŞ YÖRÜNGESİ'), imp ? __T('GEZGİN\'in hedefleme verisiyle asteroide doğru') : __T`Asteroide transfer: ${dec(this.launcher.transfer)} yıl`);
     else caption('', '');
 
     // Motor gücü

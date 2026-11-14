@@ -1,3 +1,4 @@
+import { T as __T } from './i18n.js';
 // Asteroit yüzeyi görev aşaması: sürüş, tarama, sensör, işaretçi, ankraj, enerji ve iletişim.
 import * as THREE from 'three';
 import { Rover, ChaseCam } from './rover.js';
@@ -18,11 +19,11 @@ const BEAM_FS = `uniform vec3 color; uniform float opacity; varying vec2 vUv;
 void main(){ float a = pow(1.0 - vUv.y, 1.6) * opacity; gl_FragColor = vec4(color * a, a); }`;
 
 const TYPES = {
-  spectro: { color: 0x5fd8ff, verb: 'Spektral tarama', dur: 4, drain: 2.2, mb: 40 },
-  seismic: { color: 0x6dffa8, verb: 'Sismik sensör yerleştir', dur: 3, drain: 1.2, mb: 25 },
-  drill: { color: 0xffb547, verb: 'Karot numunesi al', dur: 5.5, drain: 3.0, mb: 60 },
-  beacon: { color: 0xff5d5d, verb: 'Hedef işaretçisi kur', dur: 4, drain: 1.0, mb: 4 },
-  anchor: { color: 0xb18cff, verb: 'İyon iticiyi ankrajla', dur: 6, drain: 1.5, mb: 4 },
+  spectro: { color: 0x5fd8ff, verb: __T('Spektral tarama'), dur: 4, drain: 2.2, mb: 40 },
+  seismic: { color: 0x6dffa8, verb: __T('Sismik sensör yerleştir'), dur: 3, drain: 1.2, mb: 25 },
+  drill: { color: 0xffb547, verb: __T('Karot numunesi al'), dur: 5.5, drain: 3.0, mb: 60 },
+  beacon: { color: 0xff5d5d, verb: __T('Hedef işaretçisi kur'), dur: 4, drain: 1.0, mb: 4 },
+  anchor: { color: 0xb18cff, verb: __T('İyon iticiyi ankrajla'), dur: 6, drain: 1.5, mb: 4 },
 };
 
 export const LANDING_DIR = new THREE.Vector3(0.37, 0.45, 0.82).normalize();
@@ -31,21 +32,21 @@ export function siteDirs(cfg, ast) {
   const list = [];
   const r = cfg.rover.instruments;
   if (r.spektrometre) {
-    list.push({ type: 'spectro', name: 'Spektral Tarama A', dir: dirFromLatLon(14, 84) });
-    list.push({ type: 'spectro', name: 'Spektral Tarama B', dir: dirFromLatLon(44, 38) });
-    list.push({ type: 'spectro', name: 'Spektral Tarama C', dir: dirFromLatLon(-8, 50) });
+    list.push({ type: 'spectro', name: __T('Spektral Tarama A'), dir: dirFromLatLon(14, 84) });
+    list.push({ type: 'spectro', name: __T('Spektral Tarama B'), dir: dirFromLatLon(44, 38) });
+    list.push({ type: 'spectro', name: __T('Spektral Tarama C'), dir: dirFromLatLon(-8, 50) });
   }
   if (r.sismometre) {
-    list.push({ type: 'seismic', name: 'Sismik Sensör 1', dir: dirFromLatLon(32, 135) });
-    list.push({ type: 'seismic', name: 'Sismik Sensör 2', dir: dirFromLatLon(-22, 205) });
-    list.push({ type: 'seismic', name: 'Sismik Sensör 3', dir: dirFromLatLon(10, 300) });
+    list.push({ type: 'seismic', name: __T('Sismik Sensör 1'), dir: dirFromLatLon(32, 135) });
+    list.push({ type: 'seismic', name: __T('Sismik Sensör 2'), dir: dirFromLatLon(-22, 205) });
+    list.push({ type: 'seismic', name: __T('Sismik Sensör 3'), dir: dirFromLatLon(10, 300) });
   }
   if (r.matkap) {
-    list.push({ type: 'drill', name: 'Karot: Büyük Krater', dir: ast.bigCrater.c.clone() });
-    list.push({ type: 'drill', name: 'Karot: Krater Kenarı', dir: ast.bigCrater.c.clone().applyAxisAngle(Y, 0.55).normalize() });
+    list.push({ type: 'drill', name: __T('Karot: Büyük Krater'), dir: ast.bigCrater.c.clone() });
+    list.push({ type: 'drill', name: __T('Karot: Krater Kenarı'), dir: ast.bigCrater.c.clone().applyAxisAngle(Y, 0.55).normalize() });
   }
-  if (cfg.methods.kinetik) list.push({ type: 'beacon', name: 'Çarpma Noktası', dir: dirFromLatLon(-6, 128) });
-  if (cfg.methods.iyon) list.push({ type: 'anchor', name: 'Kuzey Kutbu Ankrajı', dir: dirFromLatLon(87, 30) });
+  if (cfg.methods.kinetik) list.push({ type: 'beacon', name: __T('Çarpma Noktası'), dir: dirFromLatLon(-6, 128) });
+  if (cfg.methods.iyon) list.push({ type: 'anchor', name: __T('Kuzey Kutbu Ankrajı'), dir: dirFromLatLon(87, 30) });
   return list;
 }
 
@@ -120,24 +121,24 @@ export class SurfaceMission {
   get actor() { return this.eva ? this.astro : this.rover; }
 
   toggleEva() {
-    if (!this.astro) { toast('Astronot modeli yüklenemedi.', 'warn', 3); return; }
+    if (!this.astro) { toast(__T('Astronot modeli yüklenemedi.'), 'warn', 3); return; }
     if (this.eva) {
       const d = this.astro.pos.distanceTo(this.rover.pos);
-      if (d > 4.5) { toast(`GEZGİN'e binmek için aracın yanına git (${fmt(d * GAME.mPerUnit)} m).`, 'warn', 3); return; }
+      if (d > 4.5) { toast(__T`GEZGİN'e binmek için aracın yanına git (${fmt(d * GAME.mPerUnit)} m).`, 'warn', 3); return; }
       this.eva = false;
       this.astro.group.visible = false;
       this.cam.first = true;
       audio.click();
-      toast('Astronot GEZGİN\'e bindi. Oksijen yeniden dolduruluyor.', 'info', 3);
+      toast(__T('Astronot GEZGİN\'e bindi. Oksijen yeniden dolduruluyor.'), 'info', 3);
     } else {
-      if (!this.rover.grounded || this.rover.speed > 1.2) { toast('Araçtan inmek için önce dur.', 'warn', 2.5); return; }
+      if (!this.rover.grounded || this.rover.speed > 1.2) { toast(__T('Araçtan inmek için önce dur.'), 'warn', 2.5); return; }
       const side = this.rover.pos.clone().addScaledVector(this.rover.right, 2.4);
       this.astro.place(side, this.rover.fwdM);
       this.astro.group.visible = true;
       this.evaCam.reset(this.rover.fwdM, this.astro.up);
       this.eva = true;
       audio.engineOff(); audio.click();
-      toast('<b>EVA başladı.</b> <kbd>WASD</kbd> yürü, <kbd>Shift</kbd> sek-koş, <kbd>Boşluk</kbd> zıpla, <kbd>E</kbd> görev, <kbd>F</kbd> araca dön. Oksijeni izle!', 'info', 7);
+      toast(__T('<b>EVA başladı.</b> <kbd>WASD</kbd> yürü, <kbd>Shift</kbd> sek-koş, <kbd>Boşluk</kbd> zıpla, <kbd>E</kbd> görev, <kbd>F</kbd> araca dön. Oksijeni izle!'), 'info', 7);
     }
   }
 
@@ -170,11 +171,11 @@ export class SurfaceMission {
     const c = this.cfg;
     const t = [];
     const cnt = (type) => this.sites.filter((s) => s.type === type);
-    if (c.rover.instruments.spektrometre) t.push({ label: 'Spektral tarama', list: cnt('spectro') });
-    if (c.rover.instruments.sismometre) t.push({ label: 'Sismik sensör yerleştir', list: cnt('seismic') });
-    if (c.rover.instruments.matkap) t.push({ label: 'Karot numunesi al', list: cnt('drill') });
-    if (c.methods.kinetik) t.push({ label: 'Çarpma noktasına işaretçi kur', list: cnt('beacon'), critical: true });
-    if (c.methods.iyon) t.push({ label: 'İyon iticiyi kutba ankrajla', list: cnt('anchor'), critical: true });
+    if (c.rover.instruments.spektrometre) t.push({ label: __T('Spektral tarama'), list: cnt('spectro') });
+    if (c.rover.instruments.sismometre) t.push({ label: __T('Sismik sensör yerleştir'), list: cnt('seismic') });
+    if (c.rover.instruments.matkap) t.push({ label: __T('Karot numunesi al'), list: cnt('drill') });
+    if (c.methods.kinetik) t.push({ label: __T('Çarpma noktasına işaretçi kur'), list: cnt('beacon'), critical: true });
+    if (c.methods.iyon) t.push({ label: __T('İyon iticiyi kutba ankrajla'), list: cnt('anchor'), critical: true });
     this.tasks = t;
   }
 
@@ -214,11 +215,11 @@ export class SurfaceMission {
       this.astro.update(dt, inp, this.evaCam.fwd);
       this.evaCam.update(dt, this.astro, input.mdx, input.mdy, input.wheel);
       this.o2 = Math.max(0, this.o2 - dt * (100 / 240));
-      if (this.o2 <= 20 && !this.o2Warned) { this.o2Warned = true; audio.warn(); toast('<b>OKSİJEN DÜŞÜK</b> GEZGİN\'e dön.', 'bad', 5); }
+      if (this.o2 <= 20 && !this.o2Warned) { this.o2Warned = true; audio.warn(); toast(__T('<b>OKSİJEN DÜŞÜK</b> GEZGİN\'e dön.'), 'bad', 5); }
       if (this.o2 <= 0) {
         this.eva = false; this.astro.group.visible = false; this.cam.first = true;
         this.window -= 30;
-        toast('<b>Oksijen bitti!</b> Ana uydu astronotu acil durum prosedürüyle GEZGİN\'e geri aldı (−30 sn).', 'bad', 6);
+        toast(__T('<b>Oksijen bitti!</b> Ana uydu astronotu acil durum prosedürüyle GEZGİN\'e geri aldı (−30 sn).'), 'bad', 6);
       }
     } else {
       this.rover.update(dt, inp);
@@ -259,9 +260,9 @@ export class SurfaceMission {
     this.battery = THREE.MathUtils.clamp(this.battery + (gen - cons) * dt, 0, this.batCap);
     if (this.battery <= 0.01 && !this.lowPower) {
       this.lowPower = true; audio.warn();
-      toast('<b>GÜÇ KRİTİK</b> Güvenli moda geçildi. Hız sınırlı, aletler kapalı. Güneşe çık ya da şarj olmasını bekle.', 'bad', 6);
+      toast(__T('<b>GÜÇ KRİTİK</b> Güvenli moda geçildi. Hız sınırlı, aletler kapalı. Güneşe çık ya da şarj olmasını bekle.'), 'bad', 6);
     }
-    if (this.lowPower && this.battery > this.batCap * 0.15) { this.lowPower = false; toast('Güç geri geldi. Sistemler normal.', 'ok'); }
+    if (this.lowPower && this.battery > this.batCap * 0.15) { this.lowPower = false; toast(__T('Güç geri geldi. Sistemler normal.'), 'ok'); }
 
     // Veri iletimi
     if (this.link && this.buffer.length) {
@@ -293,7 +294,7 @@ export class SurfaceMission {
     if (this.allDone() && this.autoEnd === undefined) {
       this.autoEnd = 6;
       audio.chime();
-      toast(`<b>Tüm yüzey görevleri tamamlandı!</b> ${this.cfg.methods.kinetik ? 'Fırlatma üssüne' : 'Saptırma aşamasına'} geçiliyor… (<kbd>G</kbd>: hemen geç)`, 'ok', 6);
+      toast(__T`<b>Tüm yüzey görevleri tamamlandı!</b> ${this.cfg.methods.kinetik ? __T('Fırlatma üssüne') : __T('Saptırma aşamasına')} geçiliyor… (<kbd>G</kbd>: hemen geç)`, 'ok', 6);
     }
     if (this.autoEnd !== undefined) { this.autoEnd -= dt; if (this.autoEnd <= 0) this.finish('complete'); }
     if (this.window <= 0) this.finish('timeout');
@@ -346,16 +347,16 @@ export class SurfaceMission {
     }
     this.pushData({ kind: s.type, mb: s.mb, name: s.name });
     const msgs = {
-      spectro: `<b>${s.name}</b> tamamlandı. ${s.mb} MB spektrum verisi tampona alındı.`,
-      seismic: `<b>${s.name}</b> yerleştirildi.`,
-      drill: `<b>${s.name}</b> alındı. ${s.mb} MB analiz verisi.`,
-      beacon: '<b>Hedef işaretçisi aktif!</b> Çarpıcı artık kütle merkezine hassas nişan alabilir.',
-      anchor: '<b>İyon itici kutba ankrajlandı!</b> Dönme ekseni boyunca kesintisiz itme mümkün.',
+      spectro: __T`<b>${s.name}</b> tamamlandı. ${s.mb} MB spektrum verisi tampona alındı.`,
+      seismic: __T`<b>${s.name}</b> yerleştirildi.`,
+      drill: __T`<b>${s.name}</b> alındı. ${s.mb} MB analiz verisi.`,
+      beacon: __T('<b>Hedef işaretçisi aktif!</b> Çarpıcı artık kütle merkezine hassas nişan alabilir.'),
+      anchor: __T('<b>İyon itici kutba ankrajlandı!</b> Dönme ekseni boyunca kesintisiz itme mümkün.'),
     };
     toast(msgs[s.type], 'ok', 5);
     if (s.type === 'seismic' && this.sites.filter((x) => x.type === 'seismic').every((x) => x.done)) {
-      this.pushData({ kind: 'seismicNet', mb: 45, name: 'Aktif sismik deney' });
-      toast('<b>Sismik ağ tamamlandı.</b> Aktif sismik deney yapıldı: 45 MB veri. İç yapı sonucu için Dünya\'ya iletilmeli.', 'info', 6);
+      this.pushData({ kind: 'seismicNet', mb: 45, name: __T('Aktif sismik deney') });
+      toast(__T('<b>Sismik ağ tamamlandı.</b> Aktif sismik deney yapıldı: 45 MB veri. İç yapı sonucu için Dünya\'ya iletilmeli.'), 'info', 6);
     }
   }
 
@@ -367,11 +368,11 @@ export class SurfaceMission {
       this.uploadedKinds.spectro++;
       if (this.uploadedKinds.spectro >= this.sites.filter((s) => s.type === 'spectro').length && !this.densityKnown) {
         this.densityKnown = true; this.flags.massKnown = true; audio.chime();
-        toast(`<b>ANALİZ: Yoğunluk ${fmt(tr.density / 1000, 2)} g/cm³</b><br>Asteroit kütlesi ≈ ${fmt(tr.mass / 1e9, 2)} milyar ton.`, 'science', 8);
+        toast(__T`<b>ANALİZ: Yoğunluk ${fmt(tr.density / 1000, 2)} g/cm³</b><br>Asteroit kütlesi ≈ ${fmt(tr.mass / 1e9, 2)} milyar ton.`, 'science', 8);
       }
     } else if (pk.kind === 'seismicNet') {
       this.structureKnown = true; audio.chime();
-      toast(`<b>ANALİZ: İç yapı ${ASTEROID.types[tr.kind].label.toUpperCase()}</b><br>Momentum katsayısı β ≈ ${fmt(tr.beta, 1)}.`, 'science', 8);
+      toast(__T`<b>ANALİZ: İç yapı ${ASTEROID.types[tr.kind].label.toUpperCase()}</b><br>Momentum katsayısı β ≈ ${fmt(tr.beta, 1)}.`, 'science', 8);
     } else if (pk.kind === 'drill') this.uploadedKinds.drill++;
   }
 
@@ -383,7 +384,7 @@ export class SurfaceMission {
     if (this.endConfirm > 0 || this.allDone()) { this.finish(this.allDone() ? 'complete' : 'manual'); return; }
     this.endConfirm = 4;
     const open = this.tasks.filter((t) => t.list.some((s) => !s.done)).length;
-    toast(`Yüzey görevini bitirmek için <b>4 sn içinde tekrar G</b>'ye bas.${open ? ` (${open} görev eksik)` : ''}${this.buffer.length ? ' İletilmemiş veri var!' : ''}`, 'warn', 4);
+    toast(__T`Yüzey görevini bitirmek için <b>4 sn içinde tekrar G</b>'ye bas.${open ? __T` (${open} görev eksik)` : ''}${this.buffer.length ? __T(' İletilmemiş veri var!') : ''}`, 'warn', 4);
   }
 
   rescue() {
@@ -391,7 +392,7 @@ export class SurfaceMission {
     if (this.eva) { this.eva = false; this.astro.group.visible = false; }
     this.window -= 60;
     audio.warn();
-    toast('<b>GEZGİN asteroitin yerçekiminden kaçtı!</b> Ana uydu aracı yakalayıp iniş bölgesine geri bıraktı (−60 sn).', 'bad', 7);
+    toast(__T('<b>GEZGİN asteroitin yerçekiminden kaçtı!</b> Ana uydu aracı yakalayıp iniş bölgesine geri bıraktı (−60 sn).'), 'bad', 7);
     this.rover.place(LANDING_DIR, new THREE.Vector3(0, 1, 0));
     this.cam.first = true;
   }
@@ -449,29 +450,29 @@ export class SurfaceMission {
     const r = this.actor, rv = this.rover;
     $('clock').textContent = mmss(this.window);
     $('clock').classList.toggle('low', this.window < 90);
-    $('dayState').innerHTML = this.sunlit ? '<span class="sun">☀</span> GÜNEŞ IŞIĞINDA' : '<span class="moon">☾</span> GÖLGEDE';
+    $('dayState').innerHTML = this.sunlit ? __T('<span class="sun">☀</span> GÜNEŞ IŞIĞINDA') : __T('<span class="moon">☾</span> GÖLGEDE');
     const bp = this.battery / this.batCap;
     $('batFill').style.width = bp * 100 + '%';
     $('batFill').className = bp < 0.2 ? 'bad' : bp < 0.45 ? 'warn' : '';
     $('batTxt').textContent = Math.round(bp * 100) + '%';
     const net = this.genRate - this.consRate;
-    $('powerTxt').innerHTML = `Üretim <b>${fmt(this.genRate, 1)}</b> · Tüketim <b>${fmt(this.consRate, 1)}</b> · <span class="${net >= 0 ? 'ok' : 'bad'}">${net >= 0 ? '+' : ''}${fmt(net, 1)}/sn</span>`;
+    $('powerTxt').innerHTML = __T`Üretim <b>${fmt(this.genRate, 1)}</b> · Tüketim <b>${fmt(this.consRate, 1)}</b> · <span class="${net >= 0 ? 'ok' : 'bad'}">${net >= 0 ? '+' : ''}${fmt(net, 1)}/sn</span>`;
     $('fuelFill').style.width = (rv.fuel / rv.fuelMax) * 100 + '%';
     $('fuelTxt').textContent = Math.round(rv.fuel);
     $('o2Row').style.display = this.eva || this.o2 < 100 ? '' : 'none';
     $('o2Fill').style.width = this.o2 + '%';
     $('o2Fill').className = this.o2 < 20 ? 'bad' : this.o2 < 45 ? 'warn' : '';
     $('o2Txt').textContent = Math.round(this.o2) + '%';
-    $('linkTxt').innerHTML = this.link ? '<span class="ok">● DÜNYA BAĞLANTISI AKTİF</span>' : '<span class="bad">○ DÜNYA UFUK ALTINDA</span>';
+    $('linkTxt').innerHTML = this.link ? __T('<span class="ok">● DÜNYA BAĞLANTISI AKTİF</span>') : __T('<span class="bad">○ DÜNYA UFUK ALTINDA</span>');
     const buf = this.buffer.reduce((s, p) => s + p.left, 0);
-    $('dataTxt').innerHTML = `Tampon <b>${fmt(buf)}</b> MB · İletilen <b>${fmt(this.uploaded)}</b> MB${buf > 0 && this.link ? ` · <span class="ok">${this.rate} MB/sn ↑</span>` : ''}`;
+    $('dataTxt').innerHTML = __T`Tampon <b>${fmt(buf)}</b> MB · İletilen <b>${fmt(this.uploaded)}</b> MB${buf > 0 && this.link ? __T` · <span class="ok">${this.rate} MB/sn ↑</span>` : ''}`;
     $('spdTxt').textContent = fmt(r.speed * GAME.mPerUnit, 1);
     $('altTxt').textContent = fmt(r.alt * GAME.mPerUnit, 1);
     const esc = Math.min(1, r.escRatio);
     $('escFill').style.width = esc * 100 + '%';
     $('escFill').className = esc > 0.85 ? 'bad' : esc > 0.65 ? 'warn' : '';
     $('escTxt').textContent = Math.round(r.escRatio * 100) + '%';
-    $('modeTxt').textContent = this.eva ? (r.grounded ? 'EVA · YÜRÜYÜŞ' : 'EVA · SIÇRAMA') : this.lowPower ? 'GÜVENLİ MOD' : r.grounded ? 'SÜRÜŞ' : (r.energy > 0 ? 'KAÇIŞ YÖRÜNGESİ!' : 'BALİSTİK UÇUŞ');
+    $('modeTxt').textContent = this.eva ? (r.grounded ? __T('EVA · YÜRÜYÜŞ') : __T('EVA · SIÇRAMA')) : this.lowPower ? __T('GÜVENLİ MOD') : r.grounded ? __T('SÜRÜŞ') : (r.energy > 0 ? __T('KAÇIŞ YÖRÜNGESİ!') : __T('BALİSTİK UÇUŞ'));
 
     // görev listesi
     const ul = $('taskList');
@@ -480,37 +481,37 @@ export class SurfaceMission {
       const d = t.list.filter((s) => s.done).length, n = t.list.length;
       html += `<li class="${d === n ? 'done' : ''} ${t.critical ? 'crit' : ''}"><i></i>${t.label}<em>${d}/${n}</em></li>`;
     }
-    html += `<li class="${this.buffer.length === 0 && this.produced > 0 ? 'done' : ''}"><i></i>Verileri Dünya'ya ilet<em>${fmt(this.uploaded)}/${fmt(this.produced)} MB</em></li>`;
+    html += __T`<li class="${this.buffer.length === 0 && this.produced > 0 ? 'done' : ''}"><i></i>Verileri Dünya'ya ilet<em>${fmt(this.uploaded)}/${fmt(this.produced)} MB</em></li>`;
     ul.innerHTML = html;
     const tr = this.truth;
     $('knowTxt').innerHTML =
-      `Yoğunluk: <b>${this.densityKnown ? fmt(tr.density / 1000, 2) + ' g/cm³' : '?'}</b> · İç yapı: <b>${this.structureKnown ? ASTEROID.types[tr.kind].label : '?'}</b>`;
+      __T`Yoğunluk: <b>${this.densityKnown ? fmt(tr.density / 1000, 2) + ' g/cm³' : '?'}</b> · İç yapı: <b>${this.structureKnown ? ASTEROID.types[tr.kind].label : '?'}</b>`;
 
     // istem
     const pr = $('prompt');
     if (near) {
       pr.classList.add('show');
       let txt;
-      if (this.lowPower) txt = 'Güç yetersiz: aletler kapalı';
-      else if (!this.eva) txt = `<kbd>F</kbd> araçtan in · ${near.verb} yürüyerek yapılır`;
-      else if (!this.canInteract(near)) txt = `${near.verb}: dur ve yere in`;
-      else txt = `<kbd>E</kbd> basılı tut: ${near.verb}`;
+      if (this.lowPower) txt = __T('Güç yetersiz: aletler kapalı');
+      else if (!this.eva) txt = __T`<kbd>F</kbd> araçtan in · ${near.verb} yürüyerek yapılır`;
+      else if (!this.canInteract(near)) txt = __T`${near.verb}: dur ve yere in`;
+      else txt = __T`<kbd>E</kbd> basılı tut: ${near.verb}`;
       $('promptTxt').innerHTML = txt;
       $('promptFill').style.width = near.progress * 100 + '%';
     } else if (this.eva && this.astro.pos.distanceTo(this.rover.pos) < 4.5) {
       pr.classList.add('show');
-      $('promptTxt').innerHTML = '<kbd>F</kbd> GEZGİN\'e bin';
+      $('promptTxt').innerHTML = __T('<kbd>F</kbd> GEZGİN\'e bin');
       $('promptFill').style.width = '0%';
     } else pr.classList.remove('show');
 
     // uyarılar
     let w = '';
-    if (r.energy > 0 && !r.grounded) w = 'KAÇIŞ HIZI AŞILDI: ASTEROİTTEN KOPUYORSUN!';
-    else if (r.escRatio > 0.8) w = 'KAÇIŞ HIZINA YAKLAŞIYORSUN';
-    else if (this.eva && this.o2 < 20) w = 'OKSİJEN DÜŞÜK: GEZGİN\'E DÖN';
-    else if (this.lowPower) w = 'GÜÇ KRİTİK: GÜVENLİ MOD';
-    else if (bp < 0.2) w = 'BATARYA DÜŞÜK';
-    else if (this.window < 60) w = 'GÖREV PENCERESİ KAPANIYOR';
+    if (r.energy > 0 && !r.grounded) w = __T('KAÇIŞ HIZI AŞILDI: ASTEROİTTEN KOPUYORSUN!');
+    else if (r.escRatio > 0.8) w = __T('KAÇIŞ HIZINA YAKLAŞIYORSUN');
+    else if (this.eva && this.o2 < 20) w = __T('OKSİJEN DÜŞÜK: GEZGİN\'E DÖN');
+    else if (this.lowPower) w = __T('GÜÇ KRİTİK: GÜVENLİ MOD');
+    else if (bp < 0.2) w = __T('BATARYA DÜŞÜK');
+    else if (this.window < 60) w = __T('GÖREV PENCERESİ KAPANIYOR');
     const we = $('warn');
     if (w !== this.warnState) { this.warnState = w; we.textContent = w; we.classList.toggle('show', !!w); if (w) audio.warn(); }
     if (this.t > 40 && !this._helpAuto) { this._helpAuto = true; this.showHelp = false; }

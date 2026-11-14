@@ -1,3 +1,4 @@
+import { T as __T, pct } from './i18n.js';
 // Fırlatma Kompleksi LC-39: uçuş direktörünü yönet, çarpıcıyı hazırla ve ateşle.
 import * as THREE from 'three';
 import { buildLaunchSite } from './launch.js';
@@ -20,7 +21,7 @@ let CHAR_GLTF = null;
 export function preloadCharacter() {
   if (CHAR_GLTF) return Promise.resolve(CHAR_GLTF);
   const url = (window.__TEX && window.__TEX['Soldier.glb']) || 'assets/models/Soldier.glb';
-  return new Promise((res) => new GLTFLoader().load(url, (g) => { CHAR_GLTF = g; res(g); }, undefined, (e) => { console.warn('Karakter modeli yüklenemedi', e); res(null); }));
+  return new Promise((res) => new GLTFLoader().load(url, (g) => { CHAR_GLTF = g; res(g); }, undefined, (e) => { console.warn(__T('Karakter modeli yüklenemedi'), e); res(null); }));
 }
 export const getCharacterGLTF = () => CHAR_GLTF;
 
@@ -93,7 +94,7 @@ function buildCar() {
   box(1.6, 0.06, 0.06, dark, 0, 2.0, -0.45);           // tavan rayı
   // kapı yazısı
   const c = document.createElement('canvas'); c.width = 512; c.height = 96;
-  const x = c.getContext('2d'); x.fillStyle = '#1f5fbf'; x.font = '700 46px "Exo 2", sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('LC-39 SAHA EKİBİ', 256, 50);
+  const x = c.getContext('2d'); x.fillStyle = '#1f5fbf'; x.font = '700 46px "Exo 2", sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(__T('LC-39 SAHA EKİBİ'), 256, 50);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   for (const sgn of [-1, 1]) {
     const decal = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 0.36), new THREE.MeshBasicMaterial({ map: t, transparent: true }));
@@ -145,7 +146,7 @@ function screenTex(seed) {
     for (let k = 0; k < 3; k++) { x.beginPath(); for (let i = 0; i < 256; i += 4) x.lineTo(i, 40 + k * 45 + Math.sin(i * 0.05 + k) * 12 * Math.random()); x.stroke(); }
   } else { // liste
     x.fillStyle = '#6dffa8'; x.font = '14px monospace';
-    ['YAKIT   GO', 'HEDEF   GO', 'RÜZGAR  GO', 'MENZİL  GO', 'UÇUŞ YZ GO'].forEach((l, i) => x.fillText(l, 20, 30 + i * 26));
+    [__T('YAKIT   GO'), __T('HEDEF   GO'), __T('RÜZGAR  GO'), __T('MENZİL  GO'), __T('UÇUŞ YZ GO')].forEach((l, i) => x.fillText(l, 20, 30 + i * 26));
   }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   return t;
@@ -210,7 +211,7 @@ export class BaseScene {
     roof.receiveShadow = true;
     const floor = new THREE.Mesh(new THREE.PlaneGeometry(BW, BD), new THREE.MeshStandardMaterial({ color: 0x3a3d42, roughness: 0.8 }));
     floor.rotation.x = -Math.PI / 2; floor.position.set(0, 0.06, BZ); floor.receiveShadow = true; scene.add(floor);
-    const sign = new THREE.Mesh(new THREE.PlaneGeometry(9, 1.2), new THREE.MeshBasicMaterial({ map: textSign('ATEŞLEME KONTROL MERKEZİ') }));
+    const sign = new THREE.Mesh(new THREE.PlaneGeometry(9, 1.2), new THREE.MeshBasicMaterial({ map: textSign(__T('ATEŞLEME KONTROL MERKEZİ')) }));
     sign.position.set(0, BH - 0.6, front - 0.35); sign.rotation.y = Math.PI; scene.add(sign);
     // kapı ışığı
     const doorLamp = new THREE.PointLight(0xffd8a0, 30, 16, 2); doorLamp.position.set(0, 3.6, front - 1.2); scene.add(doorLamp);
@@ -221,7 +222,7 @@ export class BaseScene {
       const sc = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 1.5), new THREE.MeshBasicMaterial({ map: screenTex(i), color: new THREE.Color(1.6, 1.6, 1.6) }));
       sc.position.set(-3 + i * 3, 1.9, BZ + 6.1); sc.rotation.y = Math.PI; scene.add(sc);
     }
-    const bigScreen = new THREE.Mesh(new THREE.PlaneGeometry(8, 2.6), new THREE.MeshBasicMaterial({ map: textSign('TUFAN · ÇARPICI GÖREVİ', 1024, 330, '#5fd8ff') }));
+    const bigScreen = new THREE.Mesh(new THREE.PlaneGeometry(8, 2.6), new THREE.MeshBasicMaterial({ map: textSign(__T('TUFAN · ÇARPICI GÖREVİ'), 1024, 330, '#5fd8ff') }));
     bigScreen.position.set(0, 3.7, BZ + BD / 2 - 0.35); bigScreen.rotation.y = Math.PI; scene.add(bigScreen);
     const inLight = new THREE.PointLight(0x9fd0ff, 40, 22, 2); inLight.position.set(0, 4, BZ + 1); scene.add(inLight);
     for (const x of [-9, 9]) mkBox(1.2, 2.2, 0.8, darkMetal, x, 1.1, BZ + 6.5);
@@ -297,9 +298,9 @@ export class BaseScene {
 
     // Görevler
     this.tasks = [
-      { id: 'valve', label: 'Yakıt vanasını aç', verb: 'Vanayı aç', pos: new THREE.Vector3(50, 0, -30), hold: 3, color: 0xffb547 },
-      { id: 'data', label: 'Hedefleme verisini yükle', verb: 'GEZGİN verisini rokete yükle', pos: new THREE.Vector3(tx, 0, 10.6), hold: 3, color: 0x5fd8ff },
-      { id: 'console', label: 'Konsoldan ateşle', verb: 'Ateşleme konsolunu aç', pos: new THREE.Vector3(0, 0, BZ + 4), hold: 0, color: 0xff5d5d },
+      { id: 'valve', label: __T('Yakıt vanasını aç'), verb: __T('Vanayı aç'), pos: new THREE.Vector3(50, 0, -30), hold: 3, color: 0xffb547 },
+      { id: 'data', label: __T('Hedefleme verisini yükle'), verb: __T('GEZGİN verisini rokete yükle'), pos: new THREE.Vector3(tx, 0, 10.6), hold: 3, color: 0x5fd8ff },
+      { id: 'console', label: __T('Konsoldan ateşle'), verb: __T('Ateşleme konsolunu aç'), pos: new THREE.Vector3(0, 0, BZ + 4), hold: 0, color: 0xff5d5d },
     ];
     for (const t of this.tasks) {
       t.done = false; t.progress = 0;
@@ -328,12 +329,12 @@ export class BaseScene {
       const b = e.target.closest('[data-fire]');
       if (!b) return;
       audio.click();
-      if (b.dataset.fire === 'start' && this.allGo() && this.countdown === null) { this.countdown = 10; this.lastBeep = 11; toast('Geri sayım başladı.', 'info', 3); }
-      if (b.dataset.fire === 'abort' && this.countdown !== null) { this.countdown = null; toast('Geri sayım durduruldu.', 'warn', 3); }
+      if (b.dataset.fire === 'start' && this.allGo() && this.countdown === null) { this.countdown = 10; this.lastBeep = 11; toast(__T('Geri sayım başladı.'), 'info', 3); }
+      if (b.dataset.fire === 'abort' && this.countdown !== null) { this.countdown = null; toast(__T('Geri sayım durduruldu.'), 'warn', 3); }
       if (b.dataset.fire === 'close') this.closePanel();
     };
-    toast('<b>Fırlatma Kompleksi LC-39.</b> Uçuş direktörüsün: çarpıcıyı hazırla, sığınağa geç ve ateşle.', 'info', 8);
-    toast('Kamera için ekrana tıkla. <kbd>WASD</kbd> yürü, <kbd>Shift</kbd> koş, <kbd>E</kbd> etkileşim. Yakındaki <b>saha aracına</b> <kbd>F</kbd> ile bin.', 'info', 9);
+    toast(__T('<b>Fırlatma Kompleksi LC-39.</b> Uçuş direktörüsün: çarpıcıyı hazırla, sığınağa geç ve ateşle.'), 'info', 8);
+    toast(__T('Kamera için ekrana tıkla. <kbd>WASD</kbd> yürü, <kbd>Shift</kbd> koş, <kbd>E</kbd> etkileşim. Yakındaki <b>saha aracına</b> <kbd>F</kbd> ile bin.'), 'info', 9);
     this.renderPanel();
   }
 
@@ -382,11 +383,11 @@ export class BaseScene {
   checks() {
     const beacon = this.res && this.res.flags && this.res.flags.beacon;
     return [
-      { name: 'Yakıt ikmali', ok: this.fuel >= 100, info: this.fueling || this.fuel > 0 ? `%${Math.floor(this.fuel)}` : 'Vana kapalı' },
-      { name: 'Hedefleme verisi', ok: this.dataLoaded, info: this.dataLoaded ? (beacon ? 'Hassas: işaretçi kilidi' : 'Tahmini: işaretçi yok') : 'Yüklenmedi' },
-      { name: 'Pad bölgesi tahliye', ok: this.inBunker(), info: this.inBunker() ? 'Personel sığınakta' : 'Personel sahada' },
-      { name: `Rüzgar (limit ${WIND_LIMIT} m/s)`, ok: this.wind < WIND_LIMIT, info: `${fmt(this.wind, 1)} m/s` },
-      { name: 'Uçuş yazılımı', ok: this.dataLoaded, info: this.dataLoaded ? 'Hedef koordinatları girildi' : 'Veri bekleniyor' },
+      { name: __T('Yakıt ikmali'), ok: this.fuel >= 100, info: this.fueling || this.fuel > 0 ? pct(Math.floor(this.fuel)) : __T('Vana kapalı') },
+      { name: __T('Hedefleme verisi'), ok: this.dataLoaded, info: this.dataLoaded ? (beacon ? __T('Hassas: işaretçi kilidi') : __T('Tahmini: işaretçi yok')) : __T('Yüklenmedi') },
+      { name: __T('Pad bölgesi tahliye'), ok: this.inBunker(), info: this.inBunker() ? __T('Personel sığınakta') : __T('Personel sahada') },
+      { name: __T`Rüzgar (limit ${WIND_LIMIT} m/s)`, ok: this.wind < WIND_LIMIT, info: `${fmt(this.wind, 1)} m/s` },
+      { name: __T('Uçuş yazılımı'), ok: this.dataLoaded, info: this.dataLoaded ? __T('Hedef koordinatları girildi') : __T('Veri bekleniyor') },
     ];
   }
   allGo() { return this.checks().every((c) => c.ok); }
@@ -408,7 +409,7 @@ export class BaseScene {
   // (her karede innerHTML yenilemek düğmeyi imlecin altından silip tıklamayı engelliyordu)
   buildPanel() {
     const fp = $('firePanel');
-    fp.innerHTML = `
+    fp.innerHTML = __T`
       <div class="fp-head">ATEŞLEME KONTROL · LC-39</div>
       <div class="fp-sub">Çarpıcı: ${fmt(this.cfg.impactorMass)} kg · Hedef: 2026 TK7 "Tufan"</div>
       <div class="fp-polls">${this.checks().map((c, i) => `<div class="fp-row"><span data-n="${i}"></span><em data-i="${i}"></em><b data-s="${i}"></b></div>`).join('')}</div>
@@ -437,7 +438,7 @@ export class BaseScene {
       if (st.className !== cls) st.className = cls;
     });
     const count = $('fpCount');
-    const ctext = cd === null ? (go ? 'HAZIR' : 'BEKLENİYOR') : held ? 'OTOMATİK BEKLEME' : 'T−' + Math.ceil(cd);
+    const ctext = cd === null ? (go ? __T('HAZIR') : __T('BEKLENİYOR')) : held ? __T('OTOMATİK BEKLEME') : 'T−' + Math.ceil(cd);
     if (count.textContent !== ctext) count.textContent = ctext;
     count.classList.toggle('hold', held);
     $('fpStart').classList.toggle('disabled', !(go && cd === null));
@@ -519,7 +520,7 @@ export class BaseScene {
 
   toggleCar() {
     if (this.inCar) {
-      if (Math.abs(this.carV) > 3) { toast('Araçtan inmek için önce yavaşla.', 'warn', 2.5); return; }
+      if (Math.abs(this.carV) > 3) { toast(__T('Araçtan inmek için önce yavaşla.'), 'warn', 2.5); return; }
       // sürücü tarafından in
       const h = this.carH;
       this.pos.set(this.carPos.x + Math.cos(h) * 1.9, 0, this.carPos.z - Math.sin(h) * 1.9);
@@ -690,11 +691,11 @@ export class BaseScene {
   completeTask(t) {
     t.done = true; t.progress = 1;
     audio.chime();
-    if (t.id === 'valve') { this.fueling = true; toast('<b>Yakıt vanası açıldı.</b> Sıvı oksijen ve yakıt dolumu başladı.', 'ok', 5); }
+    if (t.id === 'valve') { this.fueling = true; toast(__T('<b>Yakıt vanası açıldı.</b> Sıvı oksijen ve yakıt dolumu başladı.'), 'ok', 5); }
     if (t.id === 'data') {
       this.dataLoaded = true;
       const beacon = this.res && this.res.flags && this.res.flags.beacon;
-      toast(beacon ? '<b>Hedefleme verisi yüklendi.</b> Çarpıcı, GEZGİN\'in kurduğu işaretçiye kilitlenecek.' : '<b>Hedefleme verisi yüklendi.</b> İşaretçi yok: çarpıcı kütle merkezini tahmini koordinatla arayacak.', 'ok', 6);
+      toast(beacon ? __T('<b>Hedefleme verisi yüklendi.</b> Çarpıcı, GEZGİN\'in kurduğu işaretçiye kilitlenecek.') : __T('<b>Hedefleme verisi yüklendi.</b> İşaretçi yok: çarpıcı kütle merkezini tahmini koordinatla arayacak.'), 'ok', 6);
     }
   }
 
@@ -713,28 +714,28 @@ export class BaseScene {
 
   updateHUD() {
     const tasks = [
-      { label: 'Yakıt vanasını aç', done: this.tasks[0].done, extra: this.fueling ? `%${Math.floor(this.fuel)}` : '' },
-      { label: 'Hedefleme verisini yükle', done: this.dataLoaded, extra: '' },
-      { label: 'Sığınağa gir, konsoldan ateşle', done: this.fired, extra: '' },
+      { label: __T('Yakıt vanasını aç'), done: this.tasks[0].done, extra: this.fueling ? pct(Math.floor(this.fuel)) : '' },
+      { label: __T('Hedefleme verisini yükle'), done: this.dataLoaded, extra: '' },
+      { label: __T('Sığınağa gir, konsoldan ateşle'), done: this.fired, extra: '' },
     ];
     $('baseTasks').innerHTML = tasks.map((t) => `<li class="${t.done ? 'done' : ''}"><i></i>${t.label}<em>${t.extra}</em></li>`).join('');
     const wEl = $('windTxt');
     wEl.textContent = `${fmt(this.wind, 1)} m/s`;
     wEl.className = this.wind >= WIND_LIMIT ? 'bad' : this.wind > WIND_LIMIT - 2 ? 'warn' : '';
-    $('baseInfo').innerHTML = `Yakıt: <b>%${Math.floor(this.fuel)}</b> · Konum: <b>${this.inCar ? 'Saha aracında' : this.inBunker() ? 'Sığınak' : 'Saha'}</b>`;
+    $('baseInfo').innerHTML = __T`Yakıt: <b>%${Math.floor(this.fuel)}</b> · Konum: <b>${this.inCar ? __T('Saha aracında') : this.inBunker() ? __T('Sığınak') : __T('Saha')}</b>`;
     const pr = $('basePrompt');
     const nearCar = !this.inCar && this.pos.distanceTo(this.carPos) < 3.8;
     if (this.inCar && !this.panelOpen) {
       pr.classList.add('show');
-      $('basePromptTxt').innerHTML = `<kbd>F</kbd> araçtan in · <b>${fmt(Math.abs(this.carV) * 3.6)} km/sa</b>`;
+      $('basePromptTxt').innerHTML = __T`<kbd>F</kbd> araçtan in · <b>${fmt(Math.abs(this.carV) * 3.6)} km/sa</b>`;
       $('basePromptFill').style.width = '0%';
     } else if (nearCar && !this.near && !this.panelOpen) {
       pr.classList.add('show');
-      $('basePromptTxt').innerHTML = '<kbd>F</kbd> saha aracına bin';
+      $('basePromptTxt').innerHTML = __T('<kbd>F</kbd> saha aracına bin');
       $('basePromptFill').style.width = '0%';
     } else if (this.near && !this.panelOpen) {
       pr.classList.add('show');
-      $('basePromptTxt').innerHTML = this.near.id === 'console' ? '<kbd>E</kbd> Ateşleme konsolunu aç' : `<kbd>E</kbd> basılı tut: ${this.near.verb}`;
+      $('basePromptTxt').innerHTML = this.near.id === 'console' ? __T('<kbd>E</kbd> Ateşleme konsolunu aç') : __T`<kbd>E</kbd> basılı tut: ${this.near.verb}`;
       $('basePromptFill').style.width = (this.near.id === 'console' ? 0 : this.near.progress * 100) + '%';
     } else pr.classList.remove('show');
     $('baseControls').classList.toggle('show', this.t < 30);

@@ -1,3 +1,4 @@
+import { T as __T } from './i18n.js';
 // Görev bütçesi ve saptırma fiziği.
 //
 // Iskalama mesafesi için "yörünge boyunca kayma" yaklaşımı kullanılır:
@@ -66,7 +67,7 @@ export function deflect(cfg, M, beta, flags) {
     const hit = flags.hitEff != null ? flags.hitEff : (flags.beacon ? 0.95 : 0.6);
     const dv = (beta * cfg.impactorMass * L.vimp * 1000 / M) * hit;
     const lead = (T_IMPACT - tl.opsStart) * YEAR;
-    parts.push({ id: 'kinetik', name: 'Kinetik çarpıcı', dv, lead, shift: 3 * dv * lead, eff: hit });
+    parts.push({ id: 'kinetik', name: __T('Kinetik çarpıcı'), dv, lead, shift: 3 * dv * lead, eff: hit });
   }
   if (cfg.methods.iyon) {
     const eff = flags.anchor ? 1.0 : 0.3;
@@ -74,7 +75,7 @@ export function deflect(cfg, M, beta, flags) {
     const D = cfg.ionYears;
     const dv = a * D * YEAR;
     const lead = (T_IMPACT - tl.opsStart - D / 2) * YEAR;
-    parts.push({ id: 'iyon', name: 'İyon itici', dv, lead, shift: 3 * dv * lead, eff });
+    parts.push({ id: 'iyon', name: __T('İyon itici'), dv, lead, shift: 3 * dv * lead, eff });
   }
   if (cfg.methods.traktor) {
     const dFac = flags.massKnown ? 1.6 : 2.6;
@@ -83,7 +84,7 @@ export function deflect(cfg, M, beta, flags) {
     const D = cfg.tractorYears;
     const dv = a * D * YEAR;
     const lead = (T_IMPACT - tl.opsStart - D / 2) * YEAR;
-    parts.push({ id: 'traktor', name: 'Yerçekimi traktörü', dv, lead, shift: 3 * dv * lead, eff: 1.6 / dFac, hover: d });
+    parts.push({ id: 'traktor', name: __T('Yerçekimi traktörü'), dv, lead, shift: 3 * dv * lead, eff: 1.6 / dFac, hover: d });
   }
   const shiftKm = parts.reduce((s, p) => s + p.shift, 0) / 1000;
   const shiftRE = shiftKm / R_EARTH_KM;
@@ -102,12 +103,12 @@ export function verdict(missRE) {
 export function summarize(cfg) {
   const L = launcherOf(cfg);
   const rv = roverStats(cfg.rover);
-  const massParts = [{ label: BUS.label, v: BUS.mass }, { label: 'GEZGİN keşif aracı', v: rv.mass }];
+  const massParts = [{ label: BUS.label, v: BUS.mass }, { label: __T('GEZGİN keşif aracı'), v: rv.mass }];
   const costParts = [
     { label: BUS.label, v: BUS.cost }, { label: OPS.label, v: OPS.cost },
-    { label: 'GEZGİN keşif aracı', v: rv.cost }, { label: `Fırlatma (${L.name})`, v: L.cost },
+    { label: __T('GEZGİN keşif aracı'), v: rv.cost }, { label: __T`Fırlatma (${L.name})`, v: L.cost },
   ];
-  const names = { kinetik: 'Kinetik çarpıcı', iyon: 'İyon itici', traktor: 'Yerçekimi traktörü' };
+  const names = { kinetik: __T('Kinetik çarpıcı'), iyon: __T('İyon itici'), traktor: __T('Yerçekimi traktörü') };
   for (const id of ['kinetik', 'iyon', 'traktor']) {
     if (!cfg.methods[id]) continue;
     massParts.push({ label: names[id], v: methodMass(cfg, id) });
@@ -119,18 +120,18 @@ export function summarize(cfg) {
   const errors = [];
   const warnings = [];
   const anyMethod = cfg.methods.kinetik || cfg.methods.iyon || cfg.methods.traktor;
-  if (!anyMethod) errors.push('En az bir saptırma yöntemi seçmelisin.');
-  if (mass > L.cap) errors.push(`Kütle fırlatma kapasitesini aşıyor (${Math.round(mass)} kg > ${L.cap} kg).`);
-  if (cost > BUDGET) errors.push(`Bütçe aşıldı (${Math.round(cost)} M$ > ${BUDGET} M$).`);
-  if (tl.ionEnd && tl.ionEnd > T_IMPACT - 0.5) errors.push('İyon itme süresi çarpmaya çok yakın bitiyor.');
-  if (tl.tractorEnd && tl.tractorEnd > T_IMPACT - 0.5) errors.push('Traktör süresi çarpmaya çok yakın bitiyor.');
+  if (!anyMethod) errors.push(__T('En az bir saptırma yöntemi seçmelisin.'));
+  if (mass > L.cap) errors.push(__T`Kütle fırlatma kapasitesini aşıyor (${Math.round(mass)} kg > ${L.cap} kg).`);
+  if (cost > BUDGET) errors.push(__T`Bütçe aşıldı (${Math.round(cost)} M$ > ${BUDGET} M$).`);
+  if (tl.ionEnd && tl.ionEnd > T_IMPACT - 0.5) errors.push(__T('İyon itme süresi çarpmaya çok yakın bitiyor.'));
+  if (tl.tractorEnd && tl.tractorEnd > T_IMPACT - 0.5) errors.push(__T('Traktör süresi çarpmaya çok yakın bitiyor.'));
   if (cfg.methods.traktor && !cfg.rover.instruments.spektrometre)
-    warnings.push('Spektrometre yok: asteroit kütlesi bilinemez, traktör güvenli (uzak) mesafede beklemek zorunda kalır.');
+    warnings.push(__T('Spektrometre yok: asteroit kütlesi bilinemez, traktör güvenli (uzak) mesafede beklemek zorunda kalır.'));
   if (!cfg.rover.instruments.sismometre)
-    warnings.push('Sismometre yok: iç yapı (β) ölçülemez, sonucu önceden tahmin edemezsin.');
+    warnings.push(__T('Sismometre yok: iç yapı (β) ölçülemez, sonucu önceden tahmin edemezsin.'));
   const p = opt('power', cfg.rover.power);
-  if (p.night === 0) warnings.push('Güneş paneli gece şarj etmez. Gece için yeterli batarya al ya da güneşli bölgelerde kal.');
-  if (opt('battery', cfg.rover.battery).cap < 120 && p.night === 0) warnings.push('Küçük batarya + güneş paneli: gece sürüşü çok kısa olacak.');
+  if (p.night === 0) warnings.push(__T('Güneş paneli gece şarj etmez. Gece için yeterli batarya al ya da güneşli bölgelerde kal.'));
+  if (opt('battery', cfg.rover.battery).cap < 120 && p.night === 0) warnings.push(__T('Küçük batarya + güneş paneli: gece sürüşü çok kısa olacak.'));
 
   // Tahmini ıskalama: yüzey görevleri başarıyla tamamlanırsa
   const flags = { beacon: true, anchor: true, massKnown: !!cfg.rover.instruments.spektrometre };

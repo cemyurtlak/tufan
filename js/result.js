@@ -1,3 +1,4 @@
+import { T as __T } from './i18n.js';
 // Sonuç ekranı: B-düzlemi animasyonu, saptırma dökümü, puan ve öğrenilenler.
 import { ASTEROID, BUDGET, R_EARTH_KM, fmt, GAME } from './data.js';
 import { verdict, summarize, deflect } from './physics.js';
@@ -16,18 +17,18 @@ function lessons(cfg, res, truth, out) {
   const L = [];
   const v = verdict(out.missRE);
   if (res.pilot) {
-    if (res.pilot.missed) L.push('Çarpıcı son yaklaşmada asteroidi ıskaladı. Gerçek DART görevi son 4 saatte tamamen otonom güdümle (SMART Nav) hedefe kilitlendi.');
-    else L.push(`Çarpıcı, kütle merkezi doğrultusundaki ideal noktanın ${fmt(res.pilot.dMeters, 1)} m uzağına çarptı. Merkezden uzaklaştıkça momentumun bir kısmı asteroidi döndürmeye gider ve saptırma zayıflar.`);
+    if (res.pilot.missed) L.push(__T('Çarpıcı son yaklaşmada asteroidi ıskaladı. Gerçek DART görevi son 4 saatte tamamen otonom güdümle (SMART Nav) hedefe kilitlendi.'));
+    else L.push(__T`Çarpıcı, kütle merkezi doğrultusundaki ideal noktanın ${fmt(res.pilot.dMeters, 1)} m uzağına çarptı. Merkezden uzaklaştıkça momentumun bir kısmı asteroidi döndürmeye gider ve saptırma zayıflar.`);
   }
-  if (cfg.methods.kinetik && !res.flags.beacon && !res.pilot) L.push('Hedef işaretçisi kurulmadığı için çarpıcı kütle merkezini ıskaladı ve momentumun yalnızca %60\'ı aktarıldı. Gerçek DART görevi de son saatlerde otonom navigasyonla hedefin merkezine kilitlendi.');
-  if (cfg.methods.iyon && !res.flags.anchor) L.push('İyon itici dönme eksenine (kutba) sabitlenmediği için itme yönü sürekli döndü ve etkisi %30\'a düştü.');
-  if (cfg.methods.traktor && !res.flags.massKnown) L.push('Asteroitin kütlesi ölçülemediği için traktör çarpışma riskine karşı uzakta beklemek zorunda kaldı. Çekim kuvveti mesafenin karesiyle azalır.');
-  if (truth.kind === 'monolith' && cfg.methods.kinetik) L.push(`Bu asteroit bir monolitti (β ≈ ${fmt(truth.beta, 1)}). Katı kayalarda ejekta az olduğu için kinetik çarpmanın etkisi moloz yığınlarına göre yarı yarıya düşer.`);
-  if (truth.kind === 'rubble' && cfg.methods.kinetik) L.push(`Bu asteroit bir moloz yığınıydı (β ≈ ${fmt(truth.beta, 1)}). Fırlayan ejekta ek itme sağladı. DART'ta Dimorphos için β ≈ 3,6 ölçüldü.`);
-  if (!res.structureKnown) L.push('İç yapı ölçülmeden yapılan bir saptırma kumar gibidir. Gerçek görevlerde (ESA Hera, 2026) çarpma sonrası ölçüm yapılır.');
-  if (v === 'impact' && cfg.methods.traktor && !cfg.methods.kinetik) L.push('Yerçekimi traktörü tek başına çok zayıftır. Genelde kinetik çarpmadan sonra "ince ayar" için önerilir.');
-  if (v !== 'safe') L.push('Uyarı süresi her şeydir: aynı Δv, çarpmadan ne kadar erken uygulanırsa ıskalama mesafesi o kadar büyür (Δx ≈ 3·Δv·t).');
-  if (res.produced > 0 && res.uploaded < res.produced * 0.6) L.push('Toplanan verinin bir kısmı Dünya\'ya ulaşmadı. Veri, ancak Dünya ufkun üstündeyken iletilebilir: iletişim penceresini planlamak gerekir.');
+  if (cfg.methods.kinetik && !res.flags.beacon && !res.pilot) L.push(__T('Hedef işaretçisi kurulmadığı için çarpıcı kütle merkezini ıskaladı ve momentumun yalnızca %60\'ı aktarıldı. Gerçek DART görevi de son saatlerde otonom navigasyonla hedefin merkezine kilitlendi.'));
+  if (cfg.methods.iyon && !res.flags.anchor) L.push(__T('İyon itici dönme eksenine (kutba) sabitlenmediği için itme yönü sürekli döndü ve etkisi %30\'a düştü.'));
+  if (cfg.methods.traktor && !res.flags.massKnown) L.push(__T('Asteroitin kütlesi ölçülemediği için traktör çarpışma riskine karşı uzakta beklemek zorunda kaldı. Çekim kuvveti mesafenin karesiyle azalır.'));
+  if (truth.kind === 'monolith' && cfg.methods.kinetik) L.push(__T`Bu asteroit bir monolitti (β ≈ ${fmt(truth.beta, 1)}). Katı kayalarda ejekta az olduğu için kinetik çarpmanın etkisi moloz yığınlarına göre yarı yarıya düşer.`);
+  if (truth.kind === 'rubble' && cfg.methods.kinetik) L.push(__T`Bu asteroit bir moloz yığınıydı (β ≈ ${fmt(truth.beta, 1)}). Fırlayan ejekta ek itme sağladı. DART'ta Dimorphos için β ≈ 3,6 ölçüldü.`);
+  if (!res.structureKnown) L.push(__T('İç yapı ölçülmeden yapılan bir saptırma kumar gibidir. Gerçek görevlerde (ESA Hera, 2026) çarpma sonrası ölçüm yapılır.'));
+  if (v === 'impact' && cfg.methods.traktor && !cfg.methods.kinetik) L.push(__T('Yerçekimi traktörü tek başına çok zayıftır. Genelde kinetik çarpmadan sonra "ince ayar" için önerilir.'));
+  if (v !== 'safe') L.push(__T('Uyarı süresi her şeydir: aynı Δv, çarpmadan ne kadar erken uygulanırsa ıskalama mesafesi o kadar büyür (Δx ≈ 3·Δv·t).'));
+  if (res.produced > 0 && res.uploaded < res.produced * 0.6) L.push(__T('Toplanan verinin bir kısmı Dünya\'ya ulaşmadı. Veri, ancak Dünya ufkun üstündeyken iletilebilir: iletişim penceresini planlamak gerekir.'));
   return L.slice(0, 4);
 }
 
@@ -35,11 +36,11 @@ export function renderResult(root, { cfg, res, truth, out, onRetry, onMenu }) {
   const sum = summarize(cfg);
   const v = verdict(out.missRE);
   const sc = computeScore(out, res, sum);
-  const head = { safe: ['DÜNYA KURTARILDI', 'Tufan güvenli bir mesafeden geçecek.'], close: ['KIL PAYI', 'Asteroit atmosferin sınırından geçecek. Risk çok yüksek; ek görev şart.'], impact: ['ÇARPMA KAÇINILMAZ', 'Saptırma yetersiz kaldı. Tahliye planları devreye giriyor.'] }[v];
+  const head = { safe: [__T('DÜNYA KURTARILDI'), __T('Tufan güvenli bir mesafeden geçecek.')], close: [__T('KIL PAYI'), __T('Asteroit atmosferin sınırından geçecek. Risk çok yüksek; ek görev şart.')], impact: [__T('ÇARPMA KAÇINILMAZ'), __T('Saptırma yetersiz kaldı. Tahliye planları devreye giriyor.')] }[v];
   const T = ASTEROID.types[truth.kind];
   const flagsAll = { beacon: true, anchor: true, massKnown: true };
   const ideal = deflect(cfg, truth.mass, truth.beta, flagsAll);
-  root.innerHTML = `
+  root.innerHTML = __T`
   <div class="result-wrap ${v}">
     <div class="res-left">
       <div class="tag">AŞAMA 5 · GÖREV SONUCU</div>
@@ -56,7 +57,7 @@ export function renderResult(root, { cfg, res, truth, out, onRetry, onMenu }) {
       </div>
       <h3>SAPTIRMA DÖKÜMÜ</h3>
       <table class="tbl"><tr><th>Yöntem</th><th>Δv</th><th>Etki süresi</th><th>Kayma</th><th>Verim</th></tr>
-        ${out.parts.map((p) => `<tr><td>${p.name}</td><td>${fmt(p.dv * 100, 3)} cm/s</td><td>${fmt(p.lead / 3.156e7, 1)} yıl</td><td>${fmt(p.shift / 1000)} km</td><td class="${p.eff < 0.9 ? 'bad' : 'ok'}">%${Math.round(p.eff * 100)}</td></tr>`).join('')}
+        ${out.parts.map((p) => __T`<tr><td>${p.name}</td><td>${fmt(p.dv * 100, 3)} cm/s</td><td>${fmt(p.lead / 3.156e7, 1)} yıl</td><td>${fmt(p.shift / 1000)} km</td><td class="${p.eff < 0.9 ? 'bad' : 'ok'}">%${Math.round(p.eff * 100)}</td></tr>`).join('')}
       </table>
       <div class="ideal">Tüm yüzey görevleri eksiksiz olsaydı: <b>${fmt(ideal.missRE, 2)} R⊕</b> (${fmt(ideal.missKm)} km)</div>
       <h3>ASTEROİTİN GERÇEK YAPISI</h3>
@@ -104,7 +105,7 @@ function animateBPlane(cv, out, v) {
       ctx.beginPath(); ctx.moveTo(0, C + i * S); ctx.lineTo(W, C + i * S); ctx.stroke();
     }
     ctx.fillStyle = 'rgba(160,190,220,0.6)'; ctx.font = '12px "JetBrains Mono", monospace';
-    ctx.fillText('B-DÜZLEMİ (Dünya yarıçapı birimi)', 12, 20);
+    ctx.fillText(__T('B-DÜZLEMİ (Dünya yarıçapı birimi)'), 12, 20);
     // halkalar
     const ring = (r, c, dash) => { ctx.setLineDash(dash); ctx.strokeStyle = c; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(C, C, r * S, 0, 7); ctx.stroke(); ctx.setLineDash([]); };
     ring(1.5, 'rgba(109,255,168,0.7)', [6, 6]);

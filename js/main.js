@@ -1,3 +1,4 @@
+import { T as __T } from './i18n.js';
 // TUFAN — Gezegen Savunma Görevi · ana döngü ve aşama yönetimi
 import * as THREE from 'three';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -91,25 +92,25 @@ const nextFrame = () => new Promise((r) => requestAnimationFrame(() => setTimeou
 
 async function load() {
   const setP = (p, t) => { $('loadFill').style.width = p + '%'; $('loadText').textContent = t; };
-  setP(10, 'Asteroit yüzeyi oluşturuluyor…'); await nextFrame();
+  setP(10, __T('Asteroit yüzeyi oluşturuluyor…')); await nextFrame();
   ast = createAsteroid();
   scene.add(ast.group);
-  setP(55, 'Kayalar ve kraterler yerleştiriliyor…'); await nextFrame();
+  setP(55, __T('Kayalar ve kraterler yerleştiriliyor…')); await nextFrame();
   const all = { ...DEFAULT_CONFIG, methods: { kinetik: true, iyon: true, traktor: true }, rover: { ...DEFAULT_CONFIG.rover, instruments: { spektrometre: true, sismometre: true, matkap: true } } };
   ast.addBoulders([LANDING_DIR, ...siteDirs(all, ast).map((s) => s.dir)]);
-  setP(75, 'Gökyüzü ve Dünya hazırlanıyor (NASA Blue Marble)…'); await nextFrame();
+  setP(75, __T('Gökyüzü ve Dünya hazırlanıyor (NASA Blue Marble)…')); await nextFrame();
   sky = createSky(renderer);
   scene.add(sky.group);
   dust = new Particles(2500, { texture: makeSmokeTexture(64, 4) });
   dust.radialGravity = GAME.g0 * ast.R0 * ast.R0;
   dust.setScale(innerHeight);
   scene.add(dust.points);
-  setP(88, 'Karakter modeli yükleniyor…'); await nextFrame();
+  setP(88, __T('Karakter modeli yükleniyor…')); await nextFrame();
   await preloadCharacter();
-  setP(95, 'Shader\'lar derleniyor…'); await nextFrame();
+  setP(95, __T('Shader\'lar derleniyor…')); await nextFrame();
   setShadow(new THREE.Vector3(), 95);
   renderer.compile(scene, camera);
-  setP(100, 'Hazır'); await nextFrame();
+  setP(100, __T('Hazır')); await nextFrame();
   if (TEST) runTest(TEST); else goMenu();
   requestAnimationFrame(loop);
 }
@@ -159,11 +160,11 @@ function goBrief() {
   state.phase = 'brief';
   show('brief');
   const lines = [
-    `<b>14 Mart 2026</b> · Vera C. Rubin Gözlemevi yeni bir Dünya'ya yakın asteroit keşfetti: <b>${ASTEROID.name}</b>.`,
-    `Çap: <b>${ASTEROID.diameter} m</b> · Dönme periyodu: <b>${fmt(ASTEROID.rotationHours, 1)} saat</b> · Çarpma hızı: <b>17 km/s</b>.`,
-    `Yörünge ölçümleri <b>${ASTEROID.impactDate}</b> için <b>%99,7 çarpma olasılığı</b> gösteriyor. Açığa çıkacak enerji ≈ <b>125 megaton TNT</b>: bir metropolü yok etmeye yeter.`,
-    `Yer teleskopları asteroitin <b>%${Math.round(ASTEROID.priorRubble * 100)} olasılıkla gevşek bir moloz yığını</b>, <b>%${Math.round((1 - ASTEROID.priorRubble) * 100)} olasılıkla katı bir monolit</b> olduğunu tahmin ediyor. Kesin yapıyı ancak yerinde ölçüm söyleyebilir.`,
-    `Görevin: <b>${fmt(1000)} milyon $</b> bütçe ve <b>${T_IMPACT} yıl</b> içinde bir saptırma görevi tasarlamak, fırlatmak, asteroit yüzeyinde keşif aracını sürerek kritik ölçümleri yapmak ve Tufan'ı Dünya'dan uzaklaştırmak.`,
+    __T`<b>14 Mart 2026</b> · Vera C. Rubin Gözlemevi yeni bir Dünya'ya yakın asteroit keşfetti: <b>${ASTEROID.name}</b>.`,
+    __T`Çap: <b>${ASTEROID.diameter} m</b> · Dönme periyodu: <b>${fmt(ASTEROID.rotationHours, 1)} saat</b> · Çarpma hızı: <b>17 km/s</b>.`,
+    __T`Yörünge ölçümleri <b>${ASTEROID.impactDate}</b> için <b>%99,7 çarpma olasılığı</b> gösteriyor. Açığa çıkacak enerji ≈ <b>125 megaton TNT</b>: bir metropolü yok etmeye yeter.`,
+    __T`Yer teleskopları asteroitin <b>%${Math.round(ASTEROID.priorRubble * 100)} olasılıkla gevşek bir moloz yığını</b>, <b>%${Math.round((1 - ASTEROID.priorRubble) * 100)} olasılıkla katı bir monolit</b> olduğunu tahmin ediyor. Kesin yapıyı ancak yerinde ölçüm söyleyebilir.`,
+    __T`Görevin: <b>${fmt(1000)} milyon $</b> bütçe ve <b>${T_IMPACT} yıl</b> içinde bir saptırma görevi tasarlamak, fırlatmak, asteroit yüzeyinde keşif aracını sürerek kritik ölçümleri yapmak ve Tufan'ı Dünya'dan uzaklaştırmak.`,
   ];
   const box = $('briefText');
   box.innerHTML = lines.map((l) => `<p>${l}</p>`).join('');
@@ -218,8 +219,8 @@ function startSurface() {
   caption('', '');
   show('hud');
   surface = new SurfaceMission({ scene, camera, ast, sky, cfg: state.cfg, truth: state.truth, setShadow, dust, onEnd: (r) => endSurface(r) });
-  toast(`<b>GEZGİN yüzeyde.</b> Görev noktalarına sür, <kbd>F</kbd> ile araçtan in ve görevi yürüyerek yap. Radar sol altta.`, 'info', 8);
-  toast('Kamerayı fareyle çevirmek için ekrana <b>tıkla</b>. <kbd>H</kbd>: kontroller', 'info', 7);
+  toast(__T`<b>GEZGİN yüzeyde.</b> Görev noktalarına sür, <kbd>F</kbd> ile araçtan in ve görevi yürüyerek yap. Radar sol altta.`, 'info', 8);
+  toast(__T('Kamerayı fareyle çevirmek için ekrana <b>tıkla</b>. <kbd>H</kbd>: kontroller'), 'info', 7);
   audio.ambient(0.6);
 }
 
@@ -326,16 +327,16 @@ function goResult() {
 
 // ---------- Bölüm seçimi (sunum modu) ----------
 const CHAPTERS = [
-  { id: 'brief', n: 1, name: 'Brifing', desc: 'Tehdit ve görev tanımı' },
-  { id: 'design', n: 2, name: 'Görev Tasarımı', desc: 'Roket, yöntem ve araç seçimi' },
-  { id: 'launch', n: 3, name: 'Fırlatma', desc: 'Ana uydu ve GEZGİN kalkışı' },
-  { id: 'arrival', n: 4, name: 'Asteroide Varış', desc: 'Ana uydunun yaklaşması' },
-  { id: 'surface', n: 5, name: 'Asteroit Yüzeyi', desc: 'GEZGİN ile keşif görevleri' },
-  { id: 'base', n: 6, name: 'Fırlatma Üssü', desc: 'Uçuş direktörü ile çarpıcıyı ateşle' },
-  { id: 'launch2', n: 7, name: 'Çarpıcı Fırlatma', desc: 'Kinetik çarpıcının kalkışı' },
-  { id: 'pilot', n: 8, name: 'Son Yaklaşma', desc: 'Çarpıcıyı hedefe yönlendir' },
-  { id: 'final', n: 9, name: 'Saptırma', desc: 'Çarpma ve yörünge analizi' },
-  { id: 'result', n: 10, name: 'Sonuç', desc: 'B-düzlemi ve puan' },
+  { id: 'brief', n: 1, name: __T('Brifing'), desc: __T('Tehdit ve görev tanımı') },
+  { id: 'design', n: 2, name: __T('Görev Tasarımı'), desc: __T('Roket, yöntem ve araç seçimi') },
+  { id: 'launch', n: 3, name: __T('Fırlatma'), desc: __T('Ana uydu ve GEZGİN kalkışı') },
+  { id: 'arrival', n: 4, name: __T('Asteroide Varış'), desc: __T('Ana uydunun yaklaşması') },
+  { id: 'surface', n: 5, name: __T('Asteroit Yüzeyi'), desc: __T('GEZGİN ile keşif görevleri') },
+  { id: 'base', n: 6, name: __T('Fırlatma Üssü'), desc: __T('Uçuş direktörü ile çarpıcıyı ateşle') },
+  { id: 'launch2', n: 7, name: __T('Çarpıcı Fırlatma'), desc: __T('Kinetik çarpıcının kalkışı') },
+  { id: 'pilot', n: 8, name: __T('Son Yaklaşma'), desc: __T('Çarpıcıyı hedefe yönlendir') },
+  { id: 'final', n: 9, name: __T('Saptırma'), desc: __T('Çarpma ve yörünge analizi') },
+  { id: 'result', n: 10, name: __T('Sonuç'), desc: __T('B-düzlemi ve puan') },
 ];
 function renderChapters() {
   $('chapterList').innerHTML = CHAPTERS.map((c) => `<button class="chap" data-chapter="${c.id}"><em>${String(c.n).padStart(2, '0')}</em><b>${c.name}</b><span>${c.desc}</span></button>`).join('');
@@ -367,7 +368,7 @@ function jumpTo(id) {
   else if (id === 'pilot') goPilot();
   else if (id === 'final') { surfaceRes.flags.hitEff = 0.9; startFinal(surfaceRes, false); }
   else if (id === 'result') { surfaceRes.flags.hitEff = 0.9; outcome = deflect(state.cfg, state.truth.mass, state.truth.beta, surfaceRes.flags); goResult(); }
-  toast(`<b>Bölüm: ${CHAPTERS.find((c) => c.id === id).name}</b> · <kbd>F2</kbd> ile bölüm listesine dön`, 'info', 4);
+  toast(__T`<b>Bölüm: ${CHAPTERS.find((c) => c.id === id).name}</b> · <kbd>F2</kbd> ile bölüm listesine dön`, 'info', 4);
 }
 $('chapters').addEventListener('click', (e) => {
   const b = e.target.closest('[data-chapter]');
@@ -412,7 +413,7 @@ document.body.addEventListener('click', (e) => {
   if (act === 'resume') { setPaused(false); try { canvas.requestPointerLock(); } catch (er) { /* */ } }
   if (act === 'endSurface') { setPaused(false); surface && surface.finish('manual'); }
   if (act === 'quit') goMenu();
-  if (act === 'mute') { const m = audio.toggleMute(); a.textContent = m ? 'SES: KAPALI' : 'SES: AÇIK'; }
+  if (act === 'mute') { const m = audio.toggleMute(); a.textContent = m ? __T('SES: KAPALI') : __T('SES: AÇIK'); }
 });
 $('skipBtn').addEventListener('click', (e) => { e.stopPropagation(); skipCine(); });
 function skipCine() {

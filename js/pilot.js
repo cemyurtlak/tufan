@@ -1,3 +1,4 @@
+import { T as __T } from './i18n.js';
 // Son yaklaşma: kinetik çarpıcıyı RCS iticileriyle hedefe yönlendir.
 import * as THREE from 'three';
 import { buildImpactor, mats } from './models.js';
@@ -100,7 +101,7 @@ export class PilotPhase {
     this.predicted = null;
     this.timeScale = 1;
     this.L = launcherOf(cfg);
-    toast(`<b>Son yaklaşma.</b> ${this.beacon ? 'İşaretçinin kırmızı ışığına nişan al.' : 'İşaretçi yok: kırmızı halka tahmini kütle merkezi bölgesi.'} <kbd>WASD</kbd> ile RCS iticilerini ateşle.`, 'info', 8);
+    toast(__T`<b>Son yaklaşma.</b> ${this.beacon ? __T('İşaretçinin kırmızı ışığına nişan al.') : __T('İşaretçi yok: kırmızı halka tahmini kütle merkezi bölgesi.')} <kbd>WASD</kbd> ile RCS iticilerini ateşle.`, 'info', 8);
   }
 
   placeOnSurface(mesh, p) {
@@ -234,8 +235,8 @@ export class PilotPhase {
     // Kamerayı çarpma noktasını gören bir yere al
     this.viewPos = p.clone().addScaledVector(n, 45).addScaledVector(t1, 60).addScaledVector(t2, -20);
     this.viewN = n;
-    const q = this.hitEff >= 0.85 ? 'MÜKEMMEL İSABET' : this.hitEff >= 0.6 ? 'İYİ İSABET' : 'ZAYIF İSABET';
-    this.showCaption('ÇARPMA!', `${q} · Hedefe uzaklık ${fmt(dM, 1)} m · Momentum aktarım verimi %${Math.round(this.hitEff * 100)}`);
+    const q = this.hitEff >= 0.85 ? __T('MÜKEMMEL İSABET') : this.hitEff >= 0.6 ? __T('İYİ İSABET') : __T('ZAYIF İSABET');
+    this.showCaption(__T('ÇARPMA!'), __T`${q} · Hedefe uzaklık ${fmt(dM, 1)} m · Momentum aktarım verimi %${Math.round(this.hitEff * 100)}`);
   }
 
   missed() {
@@ -244,7 +245,7 @@ export class PilotPhase {
     this.timeScale = 1;
     this.hitEff = 0; this.dMeters = null;
     this.pRing.visible = this.pDot.visible = false;
-    this.showCaption('ISKA!', 'Çarpıcı asteroidi kaçırdı. Kinetik saptırma gerçekleşmedi.');
+    this.showCaption(__T('ISKA!'), __T('Çarpıcı asteroidi kaçırdı. Kinetik saptırma gerçekleşmedi.'));
     audio.warn();
   }
 
@@ -276,8 +277,8 @@ export class PilotPhase {
   hideCaption() { $('pilotCaption').classList.remove('show'); }
 
   updateHUD(tti, pr) {
-    $('ttiTxt').textContent = tti !== null ? fmt(tti, 1) + ' sn' : '—';
-    $('pilotSpeed').textContent = `Hız ${fmt(this.L.vimp, 1)} km/s · Mesafe ${fmt(this.pos.distanceTo(this.target) * GAME.mPerUnit / 1000, 2)} km`;
+    $('ttiTxt').textContent = tti !== null ? fmt(tti, 1) + __T(' sn') : '—';
+    $('pilotSpeed').textContent = __T`Hız ${fmt(this.L.vimp, 1)} km/s · Mesafe ${fmt(this.pos.distanceTo(this.target) * GAME.mPerUnit / 1000, 2)} km`;
     $('rcsFill').style.width = this.rcs + '%';
     $('rcsFill').className = this.rcs < 20 ? 'bad' : this.rcs < 45 ? 'warn' : '';
     $('rcsTxt').textContent = Math.round(this.rcs) + '%';
@@ -285,15 +286,15 @@ export class PilotPhase {
     if (pr) {
       const d = pr.p.distanceTo(this.shown) * GAME.mPerUnit;
       const cls = d < 4 ? 'ok' : d < 15 ? 'warn' : 'bad';
-      aim = `Tahmini isabet: <b class="${cls}">${fmt(d, 1)} m</b> ${this.beacon ? 'işaretçiden' : 'tahmini merkezden'}`;
+      aim = __T`Tahmini isabet: <b class="${cls}">${fmt(d, 1)} m</b> ${this.beacon ? __T('işaretçiden') : __T('tahmini merkezden')}`;
       $('pilotWarn').classList.remove('show');
     } else {
-      aim = 'Tahmini isabet: <b class="bad">ASTEROİDİ ISKALIYOR</b>';
-      $('pilotWarn').textContent = 'ROTA ASTEROİDİ KAÇIRIYOR · RCS İLE DÜZELT';
+      aim = __T('Tahmini isabet: <b class="bad">ASTEROİDİ ISKALIYOR</b>');
+      $('pilotWarn').textContent = __T('ROTA ASTEROİDİ KAÇIRIYOR · RCS İLE DÜZELT');
       $('pilotWarn').classList.add('show');
     }
     $('aimTxt').innerHTML = aim;
-    $('targetTxt').innerHTML = this.beacon ? 'Hedef: <b class="ok">İşaretçi kilidi (hassas)</b>' : 'Hedef: <b class="warn">Tahmini kütle merkezi (±15 m)</b>';
+    $('targetTxt').innerHTML = this.beacon ? __T('Hedef: <b class="ok">İşaretçi kilidi (hassas)</b>') : __T('Hedef: <b class="warn">Tahmini kütle merkezi (±15 m)</b>');
     $('pilotControls').classList.toggle('show', this.t < 12);
   }
 

@@ -1,3 +1,4 @@
+import { T as __T } from './i18n.js';
 // Varış ve final sinematikleri (asteroit sahnesinde)
 import * as THREE from 'three';
 import { buildMothership, buildImpactor, buildIonTug, mats } from './models.js';
@@ -42,8 +43,8 @@ export class Arrival {
     this.camera.lookAt(look);
     this.setShadow(new THREE.Vector3(), 95);
     const L = launcherOf(this.cfg);
-    if (t < 4.2) caption('VARIŞ', `2026 TK7 "Tufan" · Çap 160 m · Dönme periyodu 5,8 saat · Yolculuk ${fmt(L.transfer, 2)} yıl`);
-    else caption('GEZGİN AYRILIYOR', 'Keşif aracı yüzeye iniş için serbest bırakıldı');
+    if (t < 4.2) caption(__T('VARIŞ'), __T`2026 TK7 "Tufan" · Çap 160 m · Dönme periyodu 5,8 saat · Yolculuk ${fmt(L.transfer, 2)} yıl`);
+    else caption(__T('GEZGİN AYRILIYOR'), __T('Keşif aracı yüzeye iniş için serbest bırakıldı'));
     if (t > 7.6 && !this.done) { this.done = true; this.onDone(); }
   }
   dispose() { this.scene.remove(this.mother); }
@@ -108,7 +109,7 @@ export class FinalSequence {
             const p = imp.position;
             this.sparks.emit(p.x, p.y, p.z, dirIn.x * 4, dirIn.y * 4, dirIn.z * 4, 0.6, 3, 0.5, 1.6, 1.3, 1, 0.6, 0, 0.6, 0.4, 0.3, 0);
           }
-          caption('ÇARPICI YAKLAŞIYOR', `${fmt(this.cfg.impactorMass)} kg · ${fmt(L.vimp, 1)} km/s · ${this.res.flags.beacon ? 'işaretçiye kilitli' : '<span class="bad">işaretçi yok: kör nişan</span>'}`);
+          caption(__T('ÇARPICI YAKLAŞIYOR'), `${fmt(this.cfg.impactorMass)} kg · ${fmt(L.vimp, 1)} km/s · ${this.res.flags.beacon ? __T('işaretçiye kilitli') : __T('<span class="bad">işaretçi yok: kör nişan</span>')}`);
         } else {
           if (!hit) {
             hit = true; imp.visible = false; flash.visible = true; flash.position.copy(site).addScaledVector(normal, 1);
@@ -131,7 +132,7 @@ export class FinalSequence {
           flash.scale.setScalar(Math.min(1, u / 0.12) * 26 * (1 + u * 0.8));
           flash.material.opacity = Math.max(0, 1 - u / 1.1);
           light.intensity = 2.5e5 * Math.max(0, 1 - u / 1.4) ** 2;
-          caption('ÇARPMA!', kin ? `Δv = ${fmt(kin.dv * 100, 2)} cm/s · Isabet verimi %${Math.round(kin.eff * 100)}` : '');
+          caption(__T('ÇARPMA!'), kin ? __T`Δv = ${fmt(kin.dv * 100, 2)} cm/s · Isabet verimi %${Math.round(kin.eff * 100)}` : '');
         }
         if (this.shake > 0) {
           this.camera.position.add(new THREE.Vector3().randomDirection().multiplyScalar(this.shake));
@@ -170,7 +171,7 @@ export class FinalSequence {
         this.camera.up.copy(normal);
         this.camera.lookAt(pos.clone().addScaledVector(normal, 8));
         const yr = y0 + (y1 - y0) * Math.min(1, t / 6);
-        caption('İYON İTİCİ ÇALIŞIYOR', `${this.cfg.ionCount} × 0,25 N · Yıl ${fmtYear(yr)} / ${fmtYear(y1)} · ${ok ? 'kutba ankrajlı, kesintisiz itme' : '<span class="bad">ankraj yok: dönen yüzeyde verimsiz itme (%30)</span>'}`);
+        caption(__T('İYON İTİCİ ÇALIŞIYOR'), __T`${this.cfg.ionCount} × 0,25 N · Yıl ${fmtYear(yr)} / ${fmtYear(y1)} · ${ok ? __T('kutba ankrajlı, kesintisiz itme') : __T('<span class="bad">ankraj yok: dönen yüzeyde verimsiz itme (%30)</span>')}`);
         this.setShadow(pos, 70);
       },
     };
@@ -201,7 +202,7 @@ export class FinalSequence {
         this.camera.up.set(0, 1, 0);
         this.camera.lookAt(dir.clone().multiplyScalar(hover * 0.45));
         const yr = y0 + (y1 - y0) * Math.min(1, t / 6);
-        caption('YERÇEKİMİ TRAKTÖRÜ', `${fmt(this.cfg.tractorMass)} kg · ${fmt(hover * GAME.mPerUnit)} m mesafe · Yıl ${fmtYear(yr)} / ${fmtYear(y1)}`);
+        caption(__T('YERÇEKİMİ TRAKTÖRÜ'), __T`${fmt(this.cfg.tractorMass)} kg · ${fmt(hover * GAME.mPerUnit)} m mesafe · Yıl ${fmtYear(yr)} / ${fmtYear(y1)}`);
         this.setShadow(new THREE.Vector3(), 100);
       },
     };
@@ -221,7 +222,7 @@ export class FinalSequence {
   }
 
   analysis(t) {
-    caption('YÖRÜNGE ANALİZİ', 'Derin Uzay Ağı radar ölçümleri işleniyor…');
+    caption(__T('YÖRÜNGE ANALİZİ'), __T('Derin Uzay Ağı radar ölçümleri işleniyor…'));
     const k = ease(t / 3);
     const e = this.sky.earthWorldPos();
     const away = e.clone().normalize().multiplyScalar(-1);
