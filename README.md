@@ -5,11 +5,14 @@
 ▶ **Play in your browser:** https://cemyurtlak.github.io/tufan/
 (desktop Chrome or Edge recommended · keyboard + mouse · no install, no login)
 
-📄 Demo slides: [docs/TUFAN_Demo.pdf](docs/TUFAN_Demo.pdf)
+📄 Demo slides (English, 7 slides): [docs/TUFAN_Demo.pdf](https://cemyurtlak.github.io/tufan/docs/TUFAN_Demo.pdf)  
+🇹🇷 Jury presentation (Turkish, local event): [docs/TUFAN_Juri_Sunumu_TR.pdf](https://cemyurtlak.github.io/tufan/docs/TUFAN_Juri_Sunumu_TR.pdf)
 
 A fictional 160 m asteroid, "2026 TK7 Tufan", may hit Earth in 10 years. With a US$1 billion budget the player designs the whole deflection mission, launches it, drives a rover on the asteroid to take measurements, directs the launch of the kinetic impactor and steers it in during final approach. Every decision trades off mass, money, power, data and time, and the result screen explains why the mission succeeded or failed.
 
-> The scenario is fictional and is not a real threat. The game interface is currently in Turkish; an English UI is on the roadmap.
+> The scenario is fictional and is not a real threat.
+
+**Languages:** English (default) and Turkish. Switch with the **EN / TR** buttons on the main menu; the choice is remembered. You can also open `?lang=tr` or `?lang=en`.
 
 ## Mission flow
 
@@ -23,7 +26,7 @@ A fictional 160 m asteroid, "2026 TK7 Tufan", may hit Earth in 10 years. With a 
 | 6. Final approach | Steer the kinetic impactor with RCS thrusters onto the beacon; aim accuracy sets momentum transfer efficiency |
 | 7. Deflection & result | Ejecta, ion thrust and tractor time-lapse; B-plane miss distance, Δv breakdown, true asteroid structure, score and "What did we learn?" |
 
-**Presentation mode:** press **F2** anywhere (or *BÖLÜM SEÇ* in the main menu) to jump to any chapter; skipped chapters are filled with sample data.
+**Presentation mode:** press **F2** anywhere (or *SELECT CHAPTER* in the main menu) to jump to any chapter; skipped chapters are filled with sample data.
 
 ## Controls
 
@@ -70,8 +73,9 @@ Double-click `TUFAN.html` (single-file build, works offline), or serve the folde
 
 ```
 index.html  css/  js/          game source (ES modules, no build step)
+js/i18n.js, js/i18n_en.js     language system and English strings (source text is Turkish)
 lib/                           three.js r160 + addons
 assets/                        NASA textures, astronaut model
 TUFAN.html                     single-file offline build
-docs/                          demo slides
+docs/                          demo slides, Turkish jury presentation
 ```
