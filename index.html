@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TUFAN — Gezegen Savunma Görevi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
+    { "imports": { "three": "./lib/three.module.js", "three/addons/": "./lib/addons/" } }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- YÜKLEME -->
+  <div id="loading" class="screen show">
+    <div class="load-box">
+      <div class="logo">TUFAN</div>
+      <div class="load-bar"><i id="loadFill"></i></div>
+      <div id="loadText">Başlatılıyor…</div>
+    </div>
+  </div>
+
+  <!-- ANA MENÜ -->
+  <div id="menu" class="screen">
+    <div class="menu-inner">
+      <div class="tag">NASA SPACE APPS CHALLENGE 2026 · UZAY GÖREVİ TASARIM OYUNU</div>
+      <h1 class="title">TUFAN</h1>
+      <div class="subtitle">Gezegen Savunma Görevi</div>
+      <p class="menu-desc">Dünya'ya yaklaşan bir asteroit için görevi sen tasarla, roketi fırlat, asteroitin yüzeyinde keşif aracını sür ve gezegeni kurtar.</p>
+      <div class="menu-btns">
+        <button class="btn primary" data-act="start">GÖREVE BAŞLA</button>
+        <button class="btn" data-act="chapters">BÖLÜM SEÇ <small>(sunum)</small></button>
+        <button class="btn" data-act="howto">NASIL OYNANIR</button>
+        <button class="btn" data-act="about">BİLİM &amp; KAYNAKLAR</button>
+      </div>
+      <div class="menu-foot">Görev aşamaları: Brifing → Tasarım → Fırlatma → Asteroit Yüzeyi → Fırlatma Üssü → Son Yaklaşma → Saptırma → Sonuç<br>Oyunun her yerinde <kbd>F2</kbd>: bölüm seçimi</div>
+    </div>
+    <div id="howto" class="modal">
+      <div class="modal-box">
+        <h2>NASIL OYNANIR</h2>
+        <div class="cols">
+          <div>
+            <h3>1 · Tasarla</h3>
+            <p>Fırlatma aracını, saptırma yöntemini ve keşif aracının modüllerini seç. Her seçim kütle, bütçe, güç ve zaman arasında bir <b>ödünleşme</b>dir. Kütle roket kapasitesini, maliyet 1.000 M$ bütçeyi aşamaz.</p>
+            <h3>2 · Fırlat</h3>
+            <p>Seçtiğin roket kalkar. Daha güçlü roket daha hızlı transfer ve daha sert çarpma demektir.</p>
+            <h3>3 · Asteroitte görev yap</h3>
+            <p>Keşif aracı GEZGİN'i sür. Asteroitin bileşimini tara, sismik sensör yerleştir, çarpma noktasına işaretçi kur, iyon iticiyi kutba ankrajla. Verileri Dünya ufkun üstündeyken ilet.</p>
+            <h3>4 · Sonuç</h3>
+            <p>Yüzeyde yaptıkların saptırmanın verimini belirler. Dünya'yı en az 1,5 Dünya yarıçapı ıskalatmalısın.</p>
+          </div>
+          <div>
+            <h3>Kontroller</h3>
+            <table class="keys">
+              <tr><td><kbd>W</kbd> <kbd>S</kbd></td><td>İleri / geri (fren)</td></tr>
+              <tr><td><kbd>A</kbd> <kbd>D</kbd></td><td>Sola / sağa dön</td></tr>
+              <tr><td>Fare</td><td>Kamerayı çevir (önce ekrana tıkla)</td></tr>
+              <tr><td>Tekerlek</td><td>Yakınlaş / uzaklaş</td></tr>
+              <tr><td><kbd>Shift</kbd></td><td>Hızlı sürüş (daha çok enerji)</td></tr>
+              <tr><td><kbd>Boşluk</kbd></td><td>Manevra iticisi (sıçrama)</td></tr>
+              <tr><td><kbd>E</kbd> (basılı)</td><td>Tarama / yerleştirme</td></tr>
+              <tr><td><kbd>F</kbd></td><td>Araçtan in / bin (asteroitte yürüyüş, üste araç)</td></tr>
+              <tr><td><kbd>L</kbd></td><td>Farlar (gölgede)</td></tr>
+              <tr><td><kbd>C</kbd></td><td>Yakın / yörünge kamerası</td></tr>
+              <tr><td><kbd>G</kbd> <kbd>G</kbd></td><td>Yüzey görevini bitir</td></tr>
+              <tr><td><kbd>Esc</kbd></td><td>Duraklat</td></tr>
+            </table>
+            <h3>Dikkat</h3>
+            <p>Yerçekimi çok zayıf! Fazla hızlı gidersen havalanırsın, <b>kaçış hızını</b> geçersen asteroitten kopar gidersin. Gölgede güneş paneli şarj etmez.</p>
+          </div>
+        </div>
+        <button class="btn primary" data-act="closeModal">TAMAM</button>
+      </div>
+    </div>
+    <div id="about" class="modal">
+      <div class="modal-box">
+        <h2>BİLİM &amp; KAYNAKLAR</h2>
+        <div class="cols">
+          <div>
+            <h3>Saptırma fiziği</h3>
+            <p><b>Kinetik çarpıcı:</b> Δv = β · m · v / M. β ejekta etkisidir. NASA DART görevi (2022) Dimorphos'ta β ≈ 3,6 ölçtü ve yörünge periyodunu 33 dakika kısalttı.</p>
+            <p><b>Yerçekimi traktörü:</b> a = G · m / d². Asteroide dokunmadan, yalnızca kütle çekimiyle çeker.</p>
+            <p><b>İyon itici:</b> Sürekli, düşük itki. Dönen bir asteroitte itme yönünü sabit tutmak için dönme eksenine yerleştirilmelidir.</p>
+            <p><b>Iskalama:</b> Δx ≈ 3 · Δv · t. Erken uygulanan küçük bir hız değişimi, yıllar içinde binlerce kilometreye dönüşür.</p>
+          </div>
+          <div>
+            <h3>Kaynaklar &amp; veri</h3>
+            <ul>
+              <li>Dünya dokuları: NASA Visible Earth / Blue Marble ve Black Marble (three.js örnek dokuları aracılığıyla)</li>
+              <li>Ay dokusu: NASA LRO verisinden türetilmiş</li>
+              <li>DART: Cheng vd., Nature 616 (2023), β ölçümü</li>
+              <li>NASA Planetary Defense Coordination Office</li>
+              <li>ESA Hera görevi</li>
+            </ul>
+            <p class="dim">Oyun ölçeği: asteroitin yerçekimi oynanabilirlik için gerçeğe göre büyütülmüştür. Roket kapasiteleri ve maliyetler gerçek araçlardan esinlenen yaklaşık değerlerdir.</p>
+          </div>
+        </div>
+        <button class="btn primary" data-act="closeModal">KAPAT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRİFİNG -->
+  <div id="brief" class="screen">
+    <div class="panel brief-panel">
+      <div class="alert-head"><span class="blink">●</span> ACİL DURUM · GEZEGEN SAVUNMA KOORDİNASYON MERKEZİ</div>
+      <h2>HEDEF: 2026 TK7 "TUFAN"</h2>
+      <div id="briefText"></div>
+      <div class="brief-btns">
+        <button class="btn primary" data-act="toDesign">GÖREV TASARIMINA GEÇ →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TASARIM -->
+  <div id="design" class="screen"></div>
+
+  <!-- HUD -->
+  <div id="hud" class="screen">
+    <div id="labels"></div>
+    <div class="hud-tl panel">
+      <div class="hud-title">YÜZEY GÖREVLERİ</div>
+      <ul id="taskList"></ul>
+      <div id="knowTxt"></div>
+      <div class="hud-hint"><kbd>G</kbd><kbd>G</kbd> yüzey görevini bitir</div>
+    </div>
+    <div class="hud-tc">
+      <div class="clock-label">GÖREV PENCERESİ</div>
+      <div id="clock">12:00</div>
+      <div id="dayState"></div>
+    </div>
+    <div class="hud-tr panel">
+      <div class="sys"><span>BATARYA</span><div class="bar"><i id="batFill"></i></div><b id="batTxt">100%</b></div>
+      <div class="sys-line" id="powerTxt"></div>
+      <div class="sys"><span>İTİCİ</span><div class="bar"><i id="fuelFill"></i></div><b id="fuelTxt"></b></div>
+      <div class="sys" id="o2Row" style="display:none"><span>OKSİJEN</span><div class="bar"><i id="o2Fill"></i></div><b id="o2Txt"></b></div>
+      <div class="sys-line" id="linkTxt"></div>
+      <div class="sys-line" id="dataTxt"></div>
+    </div>
+    <canvas id="radar" width="180" height="180"></canvas>
+    <div class="hud-bc">
+      <div class="gauge"><div class="g-val" id="spdTxt">0</div><div class="g-lbl">HIZ m/s</div></div>
+      <div class="gauge"><div class="g-val" id="altTxt">0</div><div class="g-lbl">İRTİFA m</div></div>
+      <div class="gauge wide"><div class="g-mode" id="modeTxt">SÜRÜŞ</div><div class="bar esc"><i id="escFill"></i></div><div class="g-lbl">KAÇIŞ HIZI <b id="escTxt">0%</b></div></div>
+    </div>
+    <div id="prompt"><div id="promptTxt"></div><div class="bar"><i id="promptFill"></i></div></div>
+    <div id="warn"></div>
+    <div id="controls" class="panel">
+      <span><kbd>W</kbd><kbd>S</kbd> ileri/geri</span><span><kbd>A</kbd><kbd>D</kbd> dön</span><span>Fare: kamera</span>
+      <span><kbd>Shift</kbd> hızlı</span><span><kbd>Boşluk</kbd> itici</span><span><kbd>E</kbd> etkileşim</span>
+      <span><kbd>F</kbd> araçtan in / bin (EVA)</span><span><kbd>L</kbd> far</span><span><kbd>C</kbd> kamera</span><span><kbd>H</kbd> yardım</span>
+    </div>
+    <div id="crosshint" class="show">Kamera kontrolü için ekrana tıkla</div>
+  </div>
+
+  <!-- FIRLATMA ÜSSÜ -->
+  <div id="base" class="screen">
+    <div id="baseLabels"></div>
+    <div class="hud-tl panel">
+      <div class="hud-title">FIRLATMA KOMPLEKSİ LC-39</div>
+      <ul id="baseTasks" class="tasklist"></ul>
+      <div id="baseInfo" class="hud-sub"></div>
+    </div>
+    <div class="hud-tc">
+      <div class="clock-label">YÜZEY RÜZGARI</div>
+      <div id="windTxt" class="bigval">--</div>
+      <div class="hud-small">Limit 14 m/s</div>
+    </div>
+    <div id="basePrompt"><div id="basePromptTxt"></div><div class="bar"><i id="basePromptFill"></i></div></div>
+    <div id="baseControls" class="panel ctrlbar show">
+      <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> yürü</span><span><kbd>Shift</kbd> koş</span><span><kbd>Boşluk</kbd> zıpla</span>
+      <span>Fare: kamera</span><span><kbd>E</kbd> etkileşim</span><span><kbd>F</kbd> araca bin/in</span><span><kbd>F2</kbd> bölümler</span>
+    </div>
+    <div id="firePanel" class="panel"></div>
+  </div>
+
+  <!-- SON YAKLAŞMA -->
+  <div id="pilot" class="screen">
+    <div class="hud-tl panel">
+      <div class="hud-title">ÇARPICI GÜDÜMÜ</div>
+      <div class="sys"><span>RCS YAKIT</span><div class="bar"><i id="rcsFill"></i></div><b id="rcsTxt"></b></div>
+      <div class="sys-line" id="aimTxt"></div>
+      <div class="sys-line" id="targetTxt"></div>
+    </div>
+    <div class="hud-tc">
+      <div class="clock-label">ÇARPMAYA</div>
+      <div id="ttiTxt" class="bigval">--</div>
+      <div id="pilotSpeed" class="hud-small"></div>
+    </div>
+    <div id="pilotWarn"></div>
+    <div id="pilotCaption"></div>
+    <div id="pilotControls" class="panel ctrlbar show">
+      <span><kbd>W</kbd><kbd>S</kbd> yukarı/aşağı itme</span><span><kbd>A</kbd><kbd>D</kbd> sola/sağa itme</span><span><kbd>Shift</kbd> güçlü itme</span><span>Fare: kamera</span>
+      <span>Mavi halka: tahmini çarpma · Kırmızı: hedef</span>
+    </div>
+  </div>
+
+  <!-- SİNEMATİK -->
+  <div id="cine" class="screen">
+    <div class="letterbox top"></div><div class="letterbox bot"></div>
+    <div id="cineCaption"></div>
+    <div id="cineSub"></div>
+    <button class="btn small skip" id="skipBtn">ATLA ▸ <kbd>Boşluk</kbd></button>
+  </div>
+
+  <!-- SONUÇ -->
+  <div id="result" class="screen"></div>
+
+  <!-- DURAKLATMA -->
+  <div id="pause" class="overlay">
+    <div class="panel pause-box">
+      <h2>DURAKLATILDI</h2>
+      <button class="btn primary" data-act="resume">DEVAM ET</button>
+      <button class="btn" data-act="endSurface" id="pauseEnd">YÜZEY GÖREVİNİ BİTİR</button>
+      <button class="btn" data-act="chapters">BÖLÜM SEÇ</button>
+      <button class="btn" data-act="mute">SES: AÇIK</button>
+      <button class="btn ghost" data-act="quit">ANA MENÜ</button>
+    </div>
+  </div>
+
+  <!-- BÖLÜM SEÇİMİ -->
+  <div id="chapters" class="overlay">
+    <div class="panel chap-box">
+      <div class="tag">SUNUM MODU</div>
+      <h2>BÖLÜM SEÇ</h2>
+      <p class="dim">Herhangi bir bölüme doğrudan geç. Atlanan bölümler örnek verilerle (tüm görevler başarılı) doldurulur. Oyun içinde <kbd>F2</kbd> bu listeyi açar.</p>
+      <div id="chapterList"></div>
+      <button class="btn ghost" data-act="closeChapters">KAPAT</button>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+  <div id="fade"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
